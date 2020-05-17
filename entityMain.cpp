@@ -92,6 +92,12 @@ void Entity_add(Farmacie* Pharmacy)
   Entity_setUuid(Pharmacy);
   Entity_setDSize(Pharmacy);
   Entity_setPSize(Pharmacy);
+
+  if (Pharmacy->isValidFarmacie()) {
+    cout << "\nEntitatea (" << Pharmacy->getNume() << ") a fost creata cu succes.";
+  } else {
+    cout << "Entitatea creata nu este valida.";
+  }
 }
 void Entity_edit(Farmacie* Pharmacy) {
   if (!Pharmacy->isValidFarmacie()) {
@@ -154,6 +160,14 @@ void Entity_edit(Farmacie* Pharmacy) {
 }
 void Entity_delete(Farmacie* Pharmacy) {
   char remove;
+
+  if (!Pharmacy->isValidEntity()) {
+    cout << "Entitatea nu exista sau este invalida.\n\n";
+    return;
+  }
+
+  cout << "Entitatea curenta:\n" << Pharmacy->printEntitate() << endl;
+  
   cout << "Sunteti sigur ca doriti sa stergeti entitatea? (y/N): ";
   cin >> remove;
   if (toupper(remove) == 'Y') {
@@ -185,12 +199,26 @@ void Entity_setUuid(Farmacie* Pharmacy)
   int uuid;
   cout << "Inserati id-ul entitatii: ";
   cin >> uuid;
+
+  if (std::cin.fail()) {
+    std::cin.clear();
+    std::cin.ignore(256, '\n');
+    return Entity_setUuid(Pharmacy);
+  }
+  
   Pharmacy->setId(uuid);
 }
 void Entity_setDSize(Farmacie* Pharmacy) {
   int dSize;
   cout << "Introduceti numarul de medicamente disponibile in depozit: ";
   cin >> dSize;
+
+  if (std::cin.fail()) {
+    std::cin.clear();
+    std::cin.ignore(256, '\n');
+    return Entity_setDSize(Pharmacy);
+  }
+  
   Pharmacy->setDepozitSize(dSize);
 }
 void Entity_setPSize(Farmacie* Pharmacy) {
@@ -202,5 +230,5 @@ void Entity_setPSize(Farmacie* Pharmacy) {
 
 // Getters
 string Entity_print(Farmacie* Pharmacy) {
-  return Pharmacy->getEntitate();
+  return Pharmacy->printEntitate();
 }

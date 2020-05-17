@@ -26,7 +26,8 @@ public:
   // Validations
   bool isValidNume(string _nume);
   bool isValidCNP(unsigned long long int _CNP);
-  bool isValidPersoana();
+  bool isValidInitPersoana();
+  bool isValidPersoana() {}
 
   virtual ~Persoana();
 

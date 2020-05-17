@@ -11,7 +11,7 @@ class Medicament : public App
 public:
   // Constructor
   Medicament();
-  Medicament(unsigned int _interval, unsigned int _gramaj, double _pret, string _valabilitate, string _tinta, string _scop);
+  Medicament(unsigned int _interval, unsigned int _gramaj, double _pret, string _nume, string _valabilitate, string _tinta, string _scop);
 
   // Setters
   void setInterval(unsigned int _interval);

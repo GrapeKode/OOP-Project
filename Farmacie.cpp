@@ -36,6 +36,7 @@ Farmacie::Farmacie(Sirop S, Pastile P, Angajat A, Client C, int _dSize, int _pSi
 
 // Setters
 void Farmacie::setSirop(Sirop S) {
+
   if (!S.isValidMedicament()) {
       cout << "Siropul introdus este invalid!";
       return;
@@ -49,6 +50,8 @@ void Farmacie::setSirop(Sirop S) {
   }
 
   siropuri[index] = S;
+
+  cout << "Medicamentul a fost adaugat cu succes.";
 }
 void Farmacie::setPastile(Pastile P) {
   if (!P.isValidMedicament()) {
@@ -64,6 +67,8 @@ void Farmacie::setPastile(Pastile P) {
   }
 
   pastile[index] = P;
+
+  cout << "Medicamentul a fost adaugat cu succes.";
 }
 void Farmacie::setAngajat(Angajat A) {
   if (!A.isValidPersoana()) {
@@ -79,6 +84,8 @@ void Farmacie::setAngajat(Angajat A) {
   }
 
   angajati[index] = A;
+
+  cout << "Angajatul a fost adaugat cu succes.";
 }
 void Farmacie::setClient(Client C) {
   if (!C.isValidPersoana()) {
@@ -94,6 +101,8 @@ void Farmacie::setClient(Client C) {
   }
 
   clienti[index] = C;
+
+  cout << "Clientul a fost adaugat cu succes.";
 }
 void Farmacie::setDepozitSize(int _dSize) { depozitSize = isValidDSize(_dSize) ? _dSize : S_MAX + P_MAX; }
 void Farmacie::setPersonalSize(int _pSize) { personalSize = isValidPSize(_pSize) ? _pSize : A_MAX; }
@@ -120,7 +129,7 @@ int Farmacie::getLengthMedicament(T M) {
 }
 template <typename T>
 int Farmacie::getLengthPersonal(T P) {
-  for (int i = 0; i < personalSize + C_MAX; i++) {
+  for (int i = 0; i < P->hasProperty(P, "uuid") ? personalSize : C_MAX; i++) {
     if (!P[i].isValidPersoana()) {
       return i;
     }
@@ -130,7 +139,7 @@ int Farmacie::getLengthPersonal(T P) {
 }
 
 // Print
-string Farmacie::getEntitate() {
+string Farmacie::printEntitate() {
   if (!isValidFarmacie()) {
     return "Creati o entitate inainte.";
   }
@@ -139,13 +148,13 @@ string Farmacie::getEntitate() {
     "Numarul de medicamente:\t\t" + to_string(getLengthMedicament(siropuri) + getLengthMedicament(pastile)) + " / " + to_string(depozitSize) + "\n" +
     "Numarul de angajati:\t\t" + to_string(getLengthPersonal(angajati)) + " / " + to_string(personalSize) + "\n" +
     "Numarul de cienti inregistrati:\t" + to_string(getLengthPersonal(clienti)) + "\n\n" +
-    "\n-------------------------------------- Siropuri -------------------------------------" +
+    "\n-------------------------- Siropuri -------------------------" +
     "\n\n" + printMedicamente(siropuri) + "\n" +
-    "\n-------------------------------------- Pastile --------------------------------------" +
+    "\n-------------------------- Pastile --------------------------" +
     "\n\n" + printMedicamente(pastile) + "\n\n" +
-    "\n-------------------------------------- Angajati -------------------------------------" +
+    "\n-------------------------- Angajati -------------------------" +
     "\n\n" + printPersoane(angajati) + "\n" +
-    "\n-------------------------------------- Clienti --------------------------------------" +
+    "\n-------------------------- Clienti --------------------------" +
     "\n\n" + printPersoane(clienti) + "\n";
 
   return result;

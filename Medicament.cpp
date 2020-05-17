@@ -9,9 +9,11 @@ Medicament::Medicament()
   valabilitate = "15-01-1970";
   tinta = "Tinta necunoscuta";
   scop = "unknown";
+  nume = "unknown";
 }
-Medicament::Medicament(unsigned int _interval, unsigned int _gramaj, double _pret, string _valabilitate, string _tinta, string _scop)
+Medicament::Medicament(unsigned int _interval, unsigned int _gramaj, double _pret, string _nume, string _valabilitate, string _tinta, string _scop)
 {
+  this->setNume(_nume);
   this->setInterval(_interval);
   this->setGramaj(_gramaj);
   this->setPret(_pret);

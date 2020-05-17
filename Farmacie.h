@@ -47,7 +47,7 @@ public:
   int getLengthPersonal(T);
 
   // Print
-  string getEntitate();
+  string printEntitate();
   template <typename T>
   string printMedicamente(T);
   template <typename T>

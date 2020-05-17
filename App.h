@@ -36,6 +36,8 @@ public:
 
   // Utils
   string customCap(string _str, bool _type = false);
+  template <typename T>
+  bool hasProperty(T*, string);
 
   // Destructor
   virtual ~App();

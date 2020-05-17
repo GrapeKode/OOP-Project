@@ -23,7 +23,7 @@ public:
   string getNume();
   string getLocatie();
   string getInitEntitate();
-  string getEntitate() {}
+  string printEntitate() {}
 
   // Validation
   bool isValidEntity();

@@ -25,12 +25,12 @@ string Persoana::getPronume() { return prenume; }
 string Persoana::getCNP() { return to_string(CNP); }
 
 // Print
-string Persoana::getInitPersoana() { return "[x]Persona: \nNume: " + nume + " " + prenume + "\nCNP: " + to_string(CNP); }
+string Persoana::getInitPersoana() { return "Nume:\t\t" + nume + " " + prenume + "\nCNP:\t\t" + to_string(CNP) + "\n"; }
 
 // Validations
 bool Persoana::isValidNume(string _nume) { return _nume.length() > 0; }
 bool Persoana::isValidCNP(unsigned long long int _CNP) { return to_string(_CNP).length() == 13; }
-bool Persoana::isValidPersoana() { return isValidNume(nume) && isValidNume(prenume) && isValidCNP(CNP); }
+bool Persoana::isValidInitPersoana() { return isValidNume(nume) && isValidNume(prenume) && isValidCNP(CNP); }
 
 // Destructor
 Persoana::~Persoana()

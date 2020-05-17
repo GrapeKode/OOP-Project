@@ -30,6 +30,7 @@ string App::getHeader() {
 }
 
 // Validations
+
 bool App::isValidCurrentComponent(string _component) {
     string k = customCap(_component, false);
     if (k == "main" || k == "entity" || k == "medicine" || k == "employee" || k == "client" || k == "info" || k == "exit") {
@@ -49,6 +50,10 @@ string App::customCap(string _str, bool _type) {
         transform(result.begin(), result.end(), result.begin(), ::tolower);
     }
     return result;
+}
+template <typename T>
+bool hasProperty(T* obj, string propertyName) {
+    return obj.getType().GetProperty(propertyName) != NULL;
 }
 
 void App::Info()

@@ -12,7 +12,7 @@ using namespace std;
 // Main functions
 void EntityManagement(App*, Farmacie*);
 void MedicineManagement(App*, Farmacie*, Pastile*, Sirop*);
-void EmployeeManagement(App*, Farmacie*);
+void EmployeeManagement(App*, Farmacie*, Angajat*);
 void ClientManagement(App*, Farmacie*);
 
 int main()
@@ -47,7 +47,7 @@ int main()
       MedicineManagement(&Application, &Pharmacy, &Pill, &Syrup);
       break;
     case 'A':
-      EmployeeManagement(&Application, &Pharmacy);
+      EmployeeManagement(&Application, &Pharmacy, &Employee);
       break;
     case 'C':
       ClientManagement(&Application, &Pharmacy);

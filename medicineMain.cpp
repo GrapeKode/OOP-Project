@@ -117,10 +117,22 @@ void Medicine_create(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
     Medicine_setDefault(Pill);
     Pills_setNr(Pill);
     Pills_setTip(Pill);
+
+    if (!Pill->isValidMedicament()) {
+      cout << "\nMedicamentul a fost creat cu succes.";
+    } else {
+      cout << "\nMedicamentul a fost creat, dar este invalid";
+    }
   } else {
     Medicine_setDefault(Syrup);
     Syrups_setCantitate(Syrup);
     Syrups_setTip(Syrup);
+
+    if (!Syrup->isValidMedicament()) {
+      cout << "\nMedicamentul a fost creat, dar este invalid.";
+    } else {
+      cout << "\nMedicamentul a fost creat cu succes.";
+    }
   }
 
   // Save the changes
@@ -148,11 +160,6 @@ void Medicine_add(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
 void Medicine_edit(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
   int type = Medicine_choose();
 
-  if ((type == 1 && !Pill->isValidMedicament()) || (type == 2 && !Syrup->isValidMedicament())) {
-    cout << "Creati un medicament inainte de a o edita.";
-    return;
-  }
-
   Medicine_editMedicament(Pharmacy, Pill, Syrup, type);
 }
 void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, int type) {
@@ -162,9 +169,11 @@ void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, in
   cout << Pharmacy->getHeader();
   cout << "2. Editare medicament; tipul selectat: ";
   if (type == 1) {
-    cout <<"Pastile\n\n";
+    cout << "Pastile (" << Pill->getNume() << ")\n\n";
+    cout << Pill->getMedicament() << "\n\n";
   } else {
-    cout << "Sirop\n\n";
+    cout << "Sirop (" << Syrup->getNume() << ")\n\n";
+    cout << Syrup->getMedicament() << "\n\n";
   }
   cout << "1. Editeaza numele\n"
        << "2. Editeaza gramajul\n"
@@ -275,11 +284,7 @@ void Medicine_delete(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
 
   if ((type == 1 && !Pill->isValidMedicament()) || (type == 2 && !Syrup->isValidMedicament())) {
     cout << "Creati un medicament sau validati-l inainte de a-l sterge." << endl;
-    if (type == 1) {
-      cout << "Pastila invalida!";
-    } else {
-      cout << "Sirop invalid!";
-    }
+    cout << "Medicamentul este invalid!";
     return;
   }
 
@@ -298,6 +303,8 @@ void Medicine_delete(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
     } else {
       *Syrup = Sirop();
     }
+
+    cout << "Medicamentul a fost sters cu succes!";
   }
 }
 
@@ -476,11 +483,5 @@ void Syrups_setTip(Sirop* S) {
 
 // Getters
 string Medicine_print(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
-  int type = Medicine_choose();
-
-  if ((type == 1 && !Pill->isValidMedicament()) || (type == 2 && !Syrup->isValidMedicament())) {
-    return "Creati un medicament inaite de a-l afisa.";
-  }
-
-  return type == 1 ? Pill->getMedicament() : Syrup->getMedicament();
+  return Medicine_choose() == 1 ? Pill->getMedicament() : Syrup->getMedicament();
 }

@@ -26,6 +26,7 @@ public:
   // Print
   string getPersoana();
   // Validations
+  bool isValidPersoana();
   bool isValidUuid(unsigned int _uuid);
   bool isValidSalariu(double _salariu);
   bool isValidProgram(int _program);
