@@ -7,7 +7,7 @@ using namespace std;
 void Employee_create(Farmacie*, Angajat*);
 void Employee_add(Farmacie*, Angajat*);
 void Employee_edit(Farmacie*, Angajat*);
-void Employee_delete();
+void Employee_delete(Farmacie*, Angajat*);
 
 // Setters
 void Employee_setUuid(Farmacie*, Angajat*);
@@ -19,6 +19,7 @@ void Employee_setLocation(Angajat*);
 void Employee_setRank(Angajat*);
 
 // Getters
+string Employee_print(Farmacie*, Angajat*);
 
 /**
  * Employee Management
@@ -59,13 +60,13 @@ void EmployeeManagement(App* Application, Farmacie* Pharmacy, Angajat* Employee)
     case '3':
       cout << Application->getHeader();
       cout << "3. Stergere angajat\n\n";
-      Employee_delete();
+      Employee_delete(Pharmacy, Employee);
       getch();
       break;
     case '4':
       cout << Application->getHeader();
       cout << "4. Afisare angajat\n\n";
-      // Employee_add(Pharmacy, Employee);
+      cout << Employee_print(Pharmacy, Employee);
       getch();
       break;
     case '5':
@@ -119,7 +120,7 @@ void Employee_edit(Farmacie* Pharmacy, Angajat* Employee) {
 
   system("cls");
   cout << Pharmacy->getHeader()
-       << "2. Edicate angajat\n\n"
+       << "2. Editare angajat\n\n"
        << Employee->getPersoana()
        << "\n\n"
        << "1. Editeaza numele\n"
@@ -135,17 +136,47 @@ void Employee_edit(Farmacie* Pharmacy, Angajat* Employee) {
 
   switch(toupper(opt)) {
   case '1':
-    Employee_setUuid(Pharmacy, Employee);
-    cout << "\n\nuuid = " << Employee->getUuid() << "\n\n";
-    getch();
+    Employee_setName(Employee);
+    break;
+  case '2':
+    Employee_setCNP(Employee);
+    break;
+  case '3':
+    Employee_setSchedule(Employee);
+    break;
+  case '4':
+    Employee_setSalary(Employee);
+    break;
+  case '5':
+    Employee_setLocation(Employee);
+    break;
+  case '6':
+    Employee_setRank(Employee);
     break;
   case 'X':
     return;
+  default: 
+    cout << "Comanda invalida!";
+    getch();
+    break;
   }
 
   Employee_edit(Pharmacy, Employee);
 }
-void Employee_delete() {}
+void Employee_delete(Farmacie* Pharmacy, Angajat* Employee) {
+  char remove;
+
+  cout << Employee->getPersoana()
+       << "\n\n"
+       << "Sunteti sigur ca doriti sa stergeti medicamentul? (y/N): ";
+  cin >> remove;
+
+  if (tolower(remove) == 'y') {
+    // Remove employee from Entity
+    *Employee = Angajat();
+    cout << "Medicamentul a fost sters cu succes!";
+  }
+}
 
 // Setters
 void Employee_setUuid(Farmacie* Pharmacy, Angajat* Employee) {
@@ -155,8 +186,7 @@ void Employee_setUuid(Farmacie* Pharmacy, Angajat* Employee) {
   if (!Pharmacy->isValidFarmacie()) {
     Employee->setUuid(1);
   } else {
-    length = Pharmacy->getLengthPersonal(Pharmacy->getAngajati());
-    cout << "Length >>> " << length;
+    length = Pharmacy->getLengthPersonal(Pharmacy->getAngajati(), true);
     Employee->setUuid(length + 1);
   }
 }
@@ -244,3 +274,6 @@ void Employee_setRank(Angajat* Employee) {
 }
 
 // Getters
+string Employee_print(Farmacie* Pharmacy, Angajat* Employee) {
+  return Employee->getPersoana();
+}

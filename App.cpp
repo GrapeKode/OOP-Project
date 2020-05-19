@@ -3,15 +3,18 @@
 // Constructors
 App::App() {
     setAutoSave(true);
+    setAutoValidare(false);
     setCurrentComponent("Main");
 }
-App::App(bool _save, string _component) {
+App::App(bool _save, bool _autoValidare, string _component) {
     setAutoSave(_save);
     setCurrentComponent(_component);
+    setAutoValidare(_autoValidare);
 }
 
 // Setters
-void App::setAutoSave(bool _save){}
+void App::setAutoSave(bool _save) { autoSave = _save; }
+void App::setAutoValidare(bool _autoValidare) { autoValidare = _autoValidare; }
 void App::setCurrentComponent(string _component) {
     if (!isValidCurrentComponent(_component)) {
         cout << "Componenta selectata este incorecta.";
@@ -20,17 +23,36 @@ void App::setCurrentComponent(string _component) {
     currentComponent = _component;
 }
 
+// Saves
+template <typename T>
+void App::saveMedicament(T*) {
+
+}
+template <typename T>
+void App::savePersoana(T*) {}
+template <typename T>
+void App::saveEntitate(T*) {}
+
 // Getters
-bool App::getAutoSave(){}
-string App::getCurrentComponent() {}
+bool App::getAutoValidare() { return autoValidare; }
+bool App::getAutoSave() { return autoSave; }
+string App::getCurrentComponent() { return currentComponent; }
 string App::getHeader() {
     system("cls");
     // isValidCurrentComponent("Main");
     return "Aplicatia Farmacie\n\nNume: Ruben Ilciuc\nGrupa: 3124A\n\n\n";
 }
+string App::getSettings() {
+    return "Componenta selectata:\t" + this->getCurrentComponent() + "\n" +
+           "Auto salvare:\t\t" + (this->getAutoSave() ? "TRUE" : "FALSE") + "\n" +
+           "Auto validare:\t\t" + (this->getAutoValidare() ? "TRUE" : "FALSE") + "\n\n" +
+           "INFO:\n" +
+           "Auto salvare  - se salveaza automat intr-un fisier atunci cand se fac modificari.\n" +
+           "Auto validare - se valideaza automat o entitate atunci cand se creaza sau se editeaza.\n\n";
+}
+
 
 // Validations
-
 bool App::isValidCurrentComponent(string _component) {
     string k = customCap(_component, false);
     if (k == "main" || k == "entity" || k == "medicine" || k == "employee" || k == "client" || k == "info" || k == "exit") {
@@ -50,10 +72,6 @@ string App::customCap(string _str, bool _type) {
         transform(result.begin(), result.end(), result.begin(), ::tolower);
     }
     return result;
-}
-template <typename T>
-bool hasProperty(T* obj, string propertyName) {
-    return obj.getType().GetProperty(propertyName) != NULL;
 }
 
 void App::Info()

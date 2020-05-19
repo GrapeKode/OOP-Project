@@ -5,7 +5,7 @@
 using namespace std;
 
 // Main Functions
-void Entity_add(Farmacie*);
+void Entity_create(Farmacie*);
 void Entity_edit(Farmacie*);
 void Entity_delete(Farmacie*);
 
@@ -44,7 +44,7 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
     case '1':
       cout << Application->getHeader();
       cout << "1. Creare entitate/firma\n\n";
-      Entity_add(Pharmacy);
+      Entity_create(Pharmacy);
       getch();
       break;
     case '2':
@@ -82,7 +82,7 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
 }
 
 // Main Functions
-void Entity_add(Farmacie* Pharmacy)
+void Entity_create(Farmacie* Pharmacy)
 {
   *Pharmacy = Farmacie();
 

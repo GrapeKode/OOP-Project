@@ -2,6 +2,7 @@
 #define APP_H
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <algorithm>
 #include <conio.h>
@@ -17,18 +18,29 @@ class App
 public:
   // Constructors
   App();
-  App(bool _save, string _component);
+  App(bool, bool, string);
   void Info();
   void Exit();
   void Sleep(int = 1000);
 
   // Setters
   void setAutoSave(bool _save);
+  void setAutoValidare(bool);
   void setCurrentComponent(string _component);
 
+  // Saves
+  template <typename T>
+  void saveMedicament(T*);
+  template <typename T>
+  void savePersoana(T*);
+  template <typename T>
+  void saveEntitate(T*);
+
   // Getters
+  bool getAutoValidare();
   bool getAutoSave();
   string getCurrentComponent();
+  string getSettings();
   string getHeader();
 
   // Validations
@@ -36,8 +48,6 @@ public:
 
   // Utils
   string customCap(string _str, bool _type = false);
-  template <typename T>
-  bool hasProperty(T*, string);
 
   // Destructor
   virtual ~App();
@@ -45,7 +55,7 @@ public:
 protected:
 private:
   bool autoSave;
-  bool autoComplete;
+  bool autoValidare;
   string currentComponent;
 };
 

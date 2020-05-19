@@ -8,8 +8,9 @@
 1589746003 d:\fiesc\anul ii\semestrul ii\oop-project\persoana.h
 	"App.h"
 
-1589750658 d:\fiesc\anul ii\semestrul ii\oop-project\app.h
+1589900750 d:\fiesc\anul ii\semestrul ii\oop-project\app.h
 	<iostream>
+	<fstream>
 	<iomanip>
 	<algorithm>
 	<conio.h>
@@ -18,7 +19,7 @@
 	<string>
 	<unistd.h>
 
-1589750690 source:d:\fiesc\anul ii\semestrul ii\oop-project\app.cpp
+1589900873 source:d:\fiesc\anul ii\semestrul ii\oop-project\app.cpp
 	"App.h"
 
 1589623089 source:d:\fiesc\anul ii\semestrul ii\oop-project\client.cpp
@@ -33,10 +34,10 @@
 1589744048 d:\fiesc\anul ii\semestrul ii\oop-project\entitate.h
 	"App.h"
 
-1589744055 source:d:\fiesc\anul ii\semestrul ii\oop-project\farmacie.cpp
+1589894266 source:d:\fiesc\anul ii\semestrul ii\oop-project\farmacie.cpp
 	"Farmacie.h"
 
-1589750348 d:\fiesc\anul ii\semestrul ii\oop-project\farmacie.h
+1589794905 d:\fiesc\anul ii\semestrul ii\oop-project\farmacie.h
 	"Entitate.h"
 	"Medicament.h"
 	"Pastile.h"
@@ -44,7 +45,7 @@
 	"Angajat.h"
 	"Client.h"
 
-1589742675 source:d:\fiesc\anul ii\semestrul ii\oop-project\main.cpp
+1589829031 source:d:\fiesc\anul ii\semestrul ii\oop-project\main.cpp
 	"App.h"
 	"Entitate.h"
 	"Farmacie.h"
@@ -74,18 +75,17 @@
 1589471674 d:\fiesc\anul ii\semestrul ii\oop-project\sirop.h
 	"Medicament.h"
 
-1589645981 source:d:\fiesc\anul ii\semestrul ii\oop-project\clientmain.cpp
+1589900904 source:d:\fiesc\anul ii\semestrul ii\oop-project\clientmain.cpp
 	"Farmacie.h"
-	"Client.h"
 
-1589750313 source:d:\fiesc\anul ii\semestrul ii\oop-project\employeemain.cpp
+1589898524 source:d:\fiesc\anul ii\semestrul ii\oop-project\employeemain.cpp
 	"Farmacie.h"
 
 1589743075 source:d:\fiesc\anul ii\semestrul ii\oop-project\entitymain.cpp
 	"App.h"
 	"Farmacie.h"
 
-1589745455 source:d:\fiesc\anul ii\semestrul ii\oop-project\medicinemain.cpp
+1589828751 source:d:\fiesc\anul ii\semestrul ii\oop-project\medicinemain.cpp
 	"Farmacie.h"
 	"Sirop.h"
 	"Pastile.h"

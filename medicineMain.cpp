@@ -268,7 +268,6 @@ void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, in
     break;
   case 'x':
   case 'X':
-  case 'exit':
     return;
   default:
     cout << "Comanda invalida!";
@@ -281,12 +280,6 @@ void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, in
 void Medicine_delete(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
   char remove;
   int type = Medicine_choose();
-
-  if ((type == 1 && !Pill->isValidMedicament()) || (type == 2 && !Syrup->isValidMedicament())) {
-    cout << "Creati un medicament sau validati-l inainte de a-l sterge." << endl;
-    cout << "Medicamentul este invalid!";
-    return;
-  }
 
   if (type == 1) {
     cout << Pill->getMedicament() << endl;

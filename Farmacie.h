@@ -12,7 +12,7 @@
 #define S_MAX 100
 #define P_MAX 100
 #define A_MAX 20
-#define C_MAX 200
+#define C_MAX 1000
 
 class Farmacie : public Entitate
 {
@@ -32,6 +32,12 @@ public:
   void setPersonalSize(int);
   void setRemove(bool);
 
+  // Remove
+  void removeSirop(Sirop*);
+  void removePastile(Pastile*);
+  void removeAngajat(Angajat*);
+  void removeClient(Client*);
+
   // Getters
   Sirop* getSirop();
   Pastile* getPastile();
@@ -44,7 +50,13 @@ public:
   template <typename T>
   int getLengthMedicament(T);
   template <typename T>
-  int getLengthPersonal(T);
+  int getLengthPersonal(T, bool isEmployee = false);
+  // Find
+  template <typename T>
+  T findMedicament(string);
+  template <typename T>
+  T findPersoana(unsigned long long int);
+
 
   // Print
   string printEntitate();
