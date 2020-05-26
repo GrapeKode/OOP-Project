@@ -32,6 +32,9 @@ int main()
   char opt;
   do
   {
+    // Initiate current component
+    Application.setCurrentComponent("Main");
+    
     cout << Application.getHeader();
     cout << "E. Administrare entitati\n"
          << "M. Administrare medicamente\n"
@@ -62,8 +65,9 @@ int main()
       AppSettings(&Application);
       break;
     case 'I':
-      cout << Application.getHeader();
-      cout << "I. Informatii suplimentare referitoare la functionarea aplicatiei\n\n";
+      // cout << Application.getHeader();
+      system("cls");
+      cout << "I. Informatii\n\n";
       Application.Info();
       getch();
       break;

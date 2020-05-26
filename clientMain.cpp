@@ -4,10 +4,10 @@
 using namespace std;
 
 // Main Functions
-void Client_create(Farmacie*, Client*);
-void Client_add(Farmacie*, Client*);
-void Client_edit();
-void Client_delete();
+void Client_create(App*, Farmacie*, Client*);
+void Client_add(App*, Farmacie*, Client*);
+void Client_edit(App*, Farmacie*, Client*);
+void Client_delete(App*, Farmacie*, Client*);
 
 // Setters
 void Client_setName(Client*);
@@ -17,13 +17,16 @@ void Client_setReteta(Client*);
 void Client_setClientFidel(Client*);
 
 // Getters
-string Client_print(Client*);
+string Client_print(App*, Farmacie*, Client*);
 
 /**
  * Client Management
  */
 void ClientManagement(App* Application, Farmacie* Pharmacy, Client* Consumer)
 {
+  // Initiate component
+  Application->setCurrentComponent("Client");
+
   bool exit = false;
   char opt;
   do
@@ -46,27 +49,31 @@ void ClientManagement(App* Application, Farmacie* Pharmacy, Client* Consumer)
     case '1':
       cout << Application->getHeader();
       cout << "1. Creare client\n\n";
-      Client_create(Pharmacy, Consumer);
+      Client_create(Application, Pharmacy, Consumer);
       getch();
       break;
     case '2':
       cout << Application->getHeader();
       cout << "2. Editare client\n\n";
+      Client_edit(Application, Pharmacy, Consumer);
       getch();
       break;
     case '3':
       cout << Application->getHeader();
       cout << "3. Stergere client\n\n";
+      Client_delete(Application, Pharmacy, Consumer);
       getch();
       break;
     case '4':
       cout << Application->getHeader();
       cout << "4. Afisare client\n\n";
+      cout << Client_print(Application, Pharmacy, Consumer);
       getch();
       break;
     case '5':
       cout << Application->getHeader();
       cout << "5. Adaugare client\n\n";
+      Client_add(Application, Pharmacy, Consumer);
       getch();
       break;
     case 'X':
@@ -86,7 +93,7 @@ void ClientManagement(App* Application, Farmacie* Pharmacy, Client* Consumer)
 }
 
 // Main Functions
-void Client_create(Farmacie* Pharmacy, Client* Consumer) {
+void Client_create(App* Application, Farmacie* Pharmacy, Client* Consumer) {
   Client_setName(Consumer);
   Client_setCNP(Consumer);
   Client_setReteta(Consumer);
@@ -99,19 +106,22 @@ void Client_create(Farmacie* Pharmacy, Client* Consumer) {
     cout << "Clientul a fost creat, dar este invalid.";
   }
 }
-void Client_add(Farmacie* Pharmacy, Client* Consumer) {
+void Client_add(App* Application, Farmacie* Pharmacy, Client* Consumer) {
   if (!Consumer->isValidPersoana()) {
     cout << "Datele clientului sunt invalide.";
+    return;
+  }
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "Creati o entitate inainte de a adauga un client.";
     return;
   }
 
   Pharmacy->setClient(*Consumer);
 }
-void Client_edit(Farmacie* Pharmacy, Client* Consumer) {
+void Client_edit(App* Application, Farmacie* Pharmacy, Client* Consumer) {
   char opt;
 
-  system("cls");
-  cout << Pharmacy->getHeader()
+  cout << Application->getHeader()
        << "2. Editare client\n\n"
        << Consumer->getPersoana()
        << "\n\n"
@@ -148,8 +158,10 @@ void Client_edit(Farmacie* Pharmacy, Client* Consumer) {
     getch();
     break;
   }
+
+  return Client_edit(Application, Pharmacy, Consumer);
 }
-void Client_delete(Farmacie* Pharmacy, Client* Consumer) {
+void Client_delete(App* Application, Farmacie* Pharmacy, Client* Consumer) {
   std::string remove;
 
   cout << Consumer->getPersoana()
@@ -157,7 +169,7 @@ void Client_delete(Farmacie* Pharmacy, Client* Consumer) {
        << "Pentru a sterge introduceti numele clientului: ";
   cin >> remove;
 
-  if (remove == Consumer->getNume()) {
+  if (Pharmacy->customCap(remove) == Pharmacy->customCap(Consumer->getNume())) {
     *Consumer = Client();
 
     cout << "Clientul a fost sters cu succes.";
@@ -172,11 +184,13 @@ void Client_setName(Client* Consumer) {
   string firstName, lastName;
 
   cout << "Introduceti prenumele: ";
+  cin.clear();
   cin.ignore();
   getline(cin, firstName, '\n');
 
   cout << "Introduceti numele de familie: ";
-  // cin.ignore();
+  cin.clear();
+  cin.ignore();
   getline(cin, lastName, '\n');
 
   Consumer->setPrenume(firstName);
@@ -200,11 +214,22 @@ void Client_setRecomandare(Client* Consumer) {
   std::string recomandare;
 
   cout << "Introduceti recomandarea (medicamente): ";
+  cin.clear();
+  cin.ignore();
   getline(cin, recomandare, '\n');
 
   Consumer->setRecomandare(recomandare);
 }
-void Client_setReteta(Client* Consumer) {}
+void Client_setReteta(Client* Consumer) {
+  std::string reteta;
+
+  cout << "Introduceti reteta: ";
+  cin.clear();
+  cin.ignore();
+  getline(cin, reteta, '\n');
+
+  Consumer->setReteta(reteta);
+}
 void Client_setClientFidel(Client* Consumer) {
   char isClientFidel;
 
@@ -219,6 +244,6 @@ void Client_setClientFidel(Client* Consumer) {
 }
 
 // Getters
-string Client_print(Client* Consumer) {
+string Client_print(App* Application, Farmacie* Pharmacy, Client* Consumer) {
   return Consumer->getPersoana();
 }

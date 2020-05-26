@@ -7,7 +7,7 @@ Medicament::Medicament()
   gramaj = 0;
   pret = 0;
   valabilitate = "15-01-1970";
-  tinta = "Tinta necunoscuta";
+  tinta = "unknown";
   scop = "unknown";
   nume = "unknown";
 }
@@ -58,7 +58,7 @@ string Medicament::getInitMedicament() {
          "Gramaj:\t\t\t" + to_string(gramaj) + "\n" +
          "Tinta:\t\t\t" + getTinta() + "\n" +
          "Scop:\t\t\t" + getScop() + "\n" +
-         "Pret:\t\t\t" + to_string(pret) + "\n" +
+         "Pret:\t\t\t" + this->getPrecision(pret) + "\n" +
          "Interval orar:\t\t" + to_string(interval) + "\n" +
          "Valabilitate:\t\t" + getValabilitate() + "\n";
 }

@@ -40,7 +40,7 @@ string App::getCurrentComponent() { return currentComponent; }
 string App::getHeader() {
     system("cls");
     // isValidCurrentComponent("Main");
-    return "Aplicatia Farmacie\n\nNume: Ruben Ilciuc\nGrupa: 3124A\n\n\n";
+    return "Aplicatia Farmacie\t\t" + getCurrentComponent() + "\n\n";
 }
 string App::getSettings() {
     return "Componenta selectata:\t" + this->getCurrentComponent() + "\n" +
@@ -73,16 +73,28 @@ string App::customCap(string _str, bool _type) {
     }
     return result;
 }
+// template <typename T>
+string App::getPrecision(double value, int precision) {
+  std::stringstream result;
+  result << std::fixed << std::setprecision(precision) << value;
+
+  return result.str();
+}
 
 void App::Info()
 {
-    cout << "Aceasta aplicatie cuprinde 3 elemente de baza:\n"
-        << "1. Entitate - ce reprezinta o firma, o companie; in cazul nostru avem ca entitate o Farmacie\n"
-        << "\tAccesand aceasta categorie aplicatie se comporta din perspectiva unui angajator.\n\n"
-        << "2. Angajat - ex. farmacist\n"
-        << "\tCa si angajat atributele/sarcinile tale sunt de a colecta date despre posibili angajati si administrarea lor\n\n"
-        << "3. Client - ex. client intr-o farmacie\n"
-        << "\tCa si client tot ce poti face este sa ceri informatii sau faci anumite achizitii\n\n";
+    // cout << "Aceasta aplicatie cuprinde 3 elemente de baza:\n"
+    //     << "1. Entitate - ce reprezinta o firma, o companie; in cazul nostru avem ca entitate o Farmacie\n"
+    //     << "\tAccesand aceasta categorie aplicatie se comporta din perspectiva unui angajator.\n\n"
+    //     << "2. Angajat - ex. farmacist\n"
+    //     << "\tCa si angajat atributele/sarcinile tale sunt de a colecta date despre posibili angajati si administrarea lor\n\n"
+    //     << "3. Client - ex. client intr-o farmacie\n"
+    //     << "\tCa si client tot ce poti face este sa ceri informatii sau faci anumite achizitii\n\n";
+    cout << "Tema aleasa:\t Farmacie" << endl
+         << "Numele:\t\t Ruben ILCIUC" << endl
+         << "Grupa:\t\t 3124A" << endl
+         << "Specializare:\t Calculatoare" << endl
+         << "Anul:\t\t II" << endl << endl;
 }
 
 void App::Exit() {

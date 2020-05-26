@@ -4,10 +4,10 @@
 using namespace std;
 
 // Main Functions
-void Employee_create(Farmacie*, Angajat*);
-void Employee_add(Farmacie*, Angajat*);
-void Employee_edit(Farmacie*, Angajat*);
-void Employee_delete(Farmacie*, Angajat*);
+void Employee_create(App*, Farmacie*, Angajat*);
+void Employee_add(App*, Farmacie*, Angajat*);
+void Employee_edit(App*, Farmacie*, Angajat*);
+void Employee_delete(App*, Farmacie*, Angajat*);
 
 // Setters
 void Employee_setUuid(Farmacie*, Angajat*);
@@ -19,13 +19,16 @@ void Employee_setLocation(Angajat*);
 void Employee_setRank(Angajat*);
 
 // Getters
-string Employee_print(Farmacie*, Angajat*);
+string Employee_print(App*, Farmacie*, Angajat*);
 
 /**
  * Employee Management
  */
 void EmployeeManagement(App* Application, Farmacie* Pharmacy, Angajat* Employee)
 {
+  // Initiate component
+  Application->setCurrentComponent("Employee");
+
   bool exit = false;
   char opt;
   do
@@ -48,31 +51,31 @@ void EmployeeManagement(App* Application, Farmacie* Pharmacy, Angajat* Employee)
     case '1':
       cout << Application->getHeader();
       cout << "1. Adaugare angajat\n\n";
-      Employee_create(Pharmacy, Employee);
+      Employee_create(Application, Pharmacy, Employee);
       getch();
       break;
     case '2':
       cout << Application->getHeader();
       cout << "2. Editare angajat\n\n";
-      Employee_edit(Pharmacy, Employee);
+      Employee_edit(Application, Pharmacy, Employee);
       getch();
       break;
     case '3':
       cout << Application->getHeader();
       cout << "3. Stergere angajat\n\n";
-      Employee_delete(Pharmacy, Employee);
+      Employee_delete(Application, Pharmacy, Employee);
       getch();
       break;
     case '4':
       cout << Application->getHeader();
       cout << "4. Afisare angajat\n\n";
-      cout << Employee_print(Pharmacy, Employee);
+      cout << Employee_print(Application, Pharmacy, Employee);
       getch();
       break;
     case '5':
       cout << Application->getHeader();
       cout << "5. Adaugare angajat\n\n";
-      Employee_add(Pharmacy, Employee);
+      Employee_add(Application, Pharmacy, Employee);
       getch();
       break;
     case 'X':
@@ -92,7 +95,7 @@ void EmployeeManagement(App* Application, Farmacie* Pharmacy, Angajat* Employee)
 }
 
 // Main Functions
-void Employee_create(Farmacie* Pharmacy, Angajat* Employee) {
+void Employee_create(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
   Employee_setName(Employee);
   Employee_setCNP(Employee);
   Employee_setSalary(Employee);
@@ -107,7 +110,12 @@ void Employee_create(Farmacie* Pharmacy, Angajat* Employee) {
     cout << "Angajatul a fost creat, dar este invalid.";
   }
 }
-void Employee_add(Farmacie* Pharmacy, Angajat* Employee) {
+void Employee_add(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "Creati o entitate inaite de a adauga angajati.";
+    return;
+  }
+
   if (!Employee->isValidPersoana()) {
     cout << "Datele angajatului sunt invalide.";
     return;
@@ -115,11 +123,10 @@ void Employee_add(Farmacie* Pharmacy, Angajat* Employee) {
 
   Pharmacy->setAngajat(*Employee);
 }
-void Employee_edit(Farmacie* Pharmacy, Angajat* Employee) {
+void Employee_edit(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
   char opt;
 
-  system("cls");
-  cout << Pharmacy->getHeader()
+  cout << Application->getHeader()
        << "2. Editare angajat\n\n"
        << Employee->getPersoana()
        << "\n\n"
@@ -155,27 +162,32 @@ void Employee_edit(Farmacie* Pharmacy, Angajat* Employee) {
     break;
   case 'X':
     return;
-  default: 
+  default:
     cout << "Comanda invalida!";
     getch();
     break;
   }
 
-  Employee_edit(Pharmacy, Employee);
+  Employee_edit(Application, Pharmacy, Employee);
 }
-void Employee_delete(Farmacie* Pharmacy, Angajat* Employee) {
-  char remove;
+void Employee_delete(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
+  std::string remove;
 
   cout << Employee->getPersoana()
        << "\n\n"
-       << "Sunteti sigur ca doriti sa stergeti medicamentul? (y/N): ";
-  cin >> remove;
+       << "Pentru a sterge introduceti numele angajatului: ";
+  cin.clear();
+  cin.ignore();
+  getline(cin, remove, '\n');
 
-  if (tolower(remove) == 'y') {
-    // Remove employee from Entity
+  if (Pharmacy->customCap(remove) == (Pharmacy->customCap(Employee->getPrenume() + " " + Pharmacy->customCap(Employee->getNume())))) {
     *Employee = Angajat();
-    cout << "Medicamentul a fost sters cu succes!";
+
+    cout << "Angajatul a fost sters cu succes.";
+    return;
   }
+
+  cout << "Numele introdus nu corespunde.";
 }
 
 // Setters
@@ -195,10 +207,12 @@ void Employee_setName(Angajat* Employee) {
 
   cout << "Introduceti prenumele: ";
   cin.ignore();
+  cin.ignore();
   getline(cin, firstName, '\n');
 
   cout << "Introduceti numele de familie: ";
-  // cin.ignore();
+  cin.ignore();
+  cin.ignore();
   getline(cin, lastName, '\n');
 
   Employee->setPrenume(firstName);
@@ -250,7 +264,8 @@ void Employee_setLocation(Angajat* Employee) {
   std::string location;
 
   cout << "Introduceti adresa: ";
-  // cin.ignore();
+  cin.ignore();
+  cin.clear();
   getline(cin, location, '\n');
 
   if (!Employee->isValidLocatie(location)) {
@@ -263,7 +278,8 @@ void Employee_setRank(Angajat* Employee) {
   std::string rank;
 
   cout << "Introduceti gradul angajatului: ";
-  // cin.ignore();
+  cin.ignore();
+  cin.ignore();
   getline(cin, rank, '\n');
 
   if (!Employee->isValidGrad(rank)) {
@@ -274,6 +290,6 @@ void Employee_setRank(Angajat* Employee) {
 }
 
 // Getters
-string Employee_print(Farmacie* Pharmacy, Angajat* Employee) {
+string Employee_print(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
   return Employee->getPersoana();
 }

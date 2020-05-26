@@ -18,7 +18,7 @@ public:
   void setCNP(unsigned long long int _CNP);
   // Getters
   string getNume();
-  string getPronume();
+  string getPrenume();
   string getCNP();
   // Print
   string getInitPersoana();

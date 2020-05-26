@@ -21,11 +21,11 @@ void Persoana::setCNP(unsigned long long int _CNP) { CNP = isValidCNP(_CNP) ? _C
 
 // Getters
 string Persoana::getNume() { return nume; }
-string Persoana::getPronume() { return prenume; }
+string Persoana::getPrenume() { return prenume; }
 string Persoana::getCNP() { return to_string(CNP); }
 
 // Print
-string Persoana::getInitPersoana() { return "Nume:\t\t" + nume + " " + prenume + "\nCNP:\t\t" + to_string(CNP) + "\n"; }
+string Persoana::getInitPersoana() { return "Nume:\t\t" + prenume + " " + nume + "\nCNP:\t\t" + to_string(CNP) + "\n"; }
 
 // Validations
 bool Persoana::isValidNume(string _nume) { return _nume.length() > 0; }

@@ -24,9 +24,15 @@ string Client::getReteta() { return reteta; }
 bool Client::isClientFidel() { return client_fidel; }
 
 // Print
-string Client::getPersoana() { return this->getInitPersoana() + "Client!"; }
+string Client::getPersoana() {
+  return this->getInitPersoana() +
+    "Reteta:\t\t" + this->getReteta() + "\n" +
+    "Recomandare:\t" + this->getRecomandare() + "\n" +
+    "Client" + (this->isClientFidel() ? "" : "NU") +  " este fidel" + "\n\n";
+}
 
 // Validations
+bool Client::isValidPersoana() { return this->isValidInitPersoana() && isValidReteta(reteta); }
 bool Client::isValidRecomandare(string _recomandare) { return _recomandare.length() > 0; }
 bool Client::isValidReteta(string _reteta) { return _reteta.length() > 0; }
 

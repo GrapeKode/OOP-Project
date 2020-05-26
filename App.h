@@ -10,6 +10,7 @@
 #include <cmath>
 #include <string>
 #include <unistd.h>
+#include <sstream>
 
 using namespace std;
 
@@ -48,6 +49,8 @@ public:
 
   // Utils
   string customCap(string _str, bool _type = false);
+  // template <typename T>
+  string getPrecision(double, int = 2);
 
   // Destructor
   virtual ~App();

@@ -51,12 +51,17 @@ public:
   int getLengthMedicament(T);
   template <typename T>
   int getLengthPersonal(T, bool isEmployee = false);
+  //
+  int getLengthPastile();
+  int getLengthSiropuri();
+  int getLengthAngajati();
+  int getLengthClienti();
+  
   // Find
   template <typename T>
   T findMedicament(string);
   template <typename T>
   T findPersoana(unsigned long long int);
-
 
   // Print
   string printEntitate();
@@ -64,6 +69,11 @@ public:
   string printMedicamente(T);
   template <typename T>
   string printPersoane(T);
+  // 
+  string printPastile();
+  string printSiropuri();
+  string printAngajati();
+  string printClienti();
 
   // Validations
   bool isValidFarmacie();

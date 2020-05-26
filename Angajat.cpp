@@ -35,11 +35,11 @@ string Angajat::getGrad() { return grad; }
 // Print
 string Angajat::getPersoana()
 {
-  return this->getInitPersoana() + 
-    "uuid:\t\t" + to_string(uuid) + "\n" + 
-    "grad:\t\t" + grad + "\n" + 
+  return this->getInitPersoana() +
+    "uuid:\t\t" + to_string(uuid) + "\n" +
+    "grad:\t\t" + grad + "\n" +
     "program:\t" + to_string(program) + "\n" +
-    "salariu:\t" + to_string(salariu) + "\n" + 
+    "salariu:\t" + getPrecision(salariu) + "\n" +
     "locatie:\t" + locatie + "\n";
 }
 // Validations

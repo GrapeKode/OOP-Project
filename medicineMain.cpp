@@ -48,6 +48,9 @@ string Medicine_print(Farmacie*, Pastile*, Sirop*);
  */
 void MedicineManagement(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup)
 {
+  // Initiate component
+  Application->setCurrentComponent("Medicine");
+  
   bool exit = false;
   char opt;
   do
@@ -119,9 +122,9 @@ void Medicine_create(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
     Pills_setTip(Pill);
 
     if (!Pill->isValidMedicament()) {
-      cout << "\nMedicamentul a fost creat cu succes.";
+      cout << "\nMedicamentul a fost creat, dar este invalid.";
     } else {
-      cout << "\nMedicamentul a fost creat, dar este invalid";
+      cout << "\nMedicamentul a fost creat cu succes.";
     }
   } else {
     Medicine_setDefault(Syrup);
@@ -278,27 +281,34 @@ void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, in
   return Medicine_editMedicament(Pharmacy, Pill, Syrup, type);
 }
 void Medicine_delete(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
-  char remove;
+  std::string remove;
+  std::string medicineName;
   int type = Medicine_choose();
 
   if (type == 1) {
-    cout << Pill->getMedicament() << endl;
+    cout << "\n" << Pill->getMedicament();
+    medicineName = Pill->getNume();
   } else {
-    cout << Syrup->getMedicament() << endl;
+    cout << "\n" << Syrup->getMedicament();
+    medicineName = Syrup->getNume();
   }
 
-  cout << "\nSunteti sigur ca doriti sa stergeti medicamentul? (y/N): ";
+  cout << "\n\n"
+       << "Pentru a sterge introduceti numele medicamentului: ";
   cin >> remove;
 
-  if (tolower(remove) == 'y') {
+  if (Pharmacy->customCap(remove) == Pharmacy->customCap(medicineName)) {
     if (type == 1) {
       *Pill = Pastile();
     } else {
       *Syrup = Sirop();
     }
 
-    cout << "Medicamentul a fost sters cu succes!";
+    cout << "Clientul a fost sters cu succes.";
+    return;
   }
+
+  cout << "Numele introdus nu corespunde.";
 }
 
 template <typename T>
@@ -338,6 +348,7 @@ void Medicine_setName(T* M) {
   std::string name;
 
   cout << "Introduceti numele medicamentului: ";
+  cin.clear();
   cin.ignore();
   getline(cin, name, '\n');
 
@@ -393,6 +404,7 @@ void Medicine_setValabilitate(T* M) {
   std::string exp;
 
   cout << "Introduceti termenul de valabilitate (Ex: 15-01-1970): ";
+  cin.clear();
   cin.ignore();
   getline(cin, exp, '\n');
 
@@ -403,6 +415,8 @@ void Medicine_setTinta(T* M) {
   std::string tinta;
 
   cout << "Introduceti tinta (Copii | Adulti): ";
+  cin.clear();
+  cin.ignore();
   getline(cin, tinta, '\n');
 
   M->setTinta(tinta);
@@ -412,6 +426,8 @@ void Medicine_setScop(T* M) {
   std::string scop;
 
   cout << "Introduceti scopul: ";
+  cin.clear();
+  cin.ignore();
   getline(cin, scop, '\n');
 
   M->setScope(scop);
@@ -421,6 +437,8 @@ void Medicine_setCuloare(T* M) {
   std::string culoare;
 
   cout << "Introduceti culoarea: ";
+  cin.clear();
+  cin.ignore();
   getline(cin, culoare, '\n');
 
   M->setCuloare(culoare);
@@ -444,6 +462,7 @@ void Pills_setTip(Pastile* P) {
   std::string type;
 
   cout << "Introduceti tipul (Tablete | Flacon): ";
+  cin.clear();
   cin.ignore();
   getline(cin, type, '\n');
 
@@ -468,6 +487,7 @@ void Syrups_setTip(Sirop* S) {
   std::string type;
 
   cout << "Introduceti tipul (Flacon | Pliculete): ";
+  cin.clear();
   cin.ignore();
   getline(cin, type, '\n');
 
