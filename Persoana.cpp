@@ -22,7 +22,7 @@ void Persoana::setCNP(unsigned long long int _CNP) { CNP = isValidCNP(_CNP) ? _C
 // Getters
 string Persoana::getNume() { return nume; }
 string Persoana::getPrenume() { return prenume; }
-string Persoana::getCNP() { return to_string(CNP); }
+unsigned long long int Persoana::getCNP() { return CNP; }
 
 // Print
 string Persoana::getInitPersoana() { return "Nume:\t\t" + prenume + " " + nume + "\nCNP:\t\t" + to_string(CNP) + "\n"; }

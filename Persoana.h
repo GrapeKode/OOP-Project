@@ -19,7 +19,7 @@ public:
   // Getters
   string getNume();
   string getPrenume();
-  string getCNP();
+  unsigned long long int getCNP();
   // Print
   string getInitPersoana();
   string getPersoana() {}

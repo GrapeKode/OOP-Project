@@ -58,10 +58,10 @@ public:
   int getLengthClienti();
   
   // Find
-  template <typename T>
-  T findMedicament(string);
-  template <typename T>
-  T findPersoana(unsigned long long int);
+  Pastile findPastile(string);
+  Sirop findSirop(string);
+  Angajat findAngajat(unsigned long long int);
+  Client findClient(unsigned long long int);
 
   // Print
   string printEntitate();

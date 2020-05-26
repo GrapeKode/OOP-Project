@@ -40,10 +40,15 @@ void Farmacie::setSirop(Sirop S) {
     cout << "Farmacia este invalida sau nu exista.";
     return;
   }
-  
   if (!S.isValidMedicament()) {
       cout << "Siropul introdus este invalid!";
       return;
+  }
+  Sirop exists = findSirop(S.getNume());
+
+  if (exists.isValidMedicament()) {
+    cout << "Exista deja un medicament cu numele: " << S.getNume() << endl;
+    return;
   }
 
   int total = getLengthMedicament(pastile);
@@ -63,9 +68,14 @@ void Farmacie::setPastile(Pastile P) {
     cout << "Farmacia este invalida sau nu exista.";
     return;
   }
-  
   if (!P.isValidMedicament()) {
     cout << "Pastilele introduse sunt invalide!";
+    return;
+  }
+  Pastile exists = findPastile(P.getNume());
+
+  if (exists.isValidMedicament()) {
+    cout << "Exista deja un medicament cu numele: " << P.getNume() << endl;
     return;
   }
 
@@ -86,9 +96,14 @@ void Farmacie::setAngajat(Angajat A) {
     cout << "Farmacia este invalida sau nu exista.";
     return;
   }
-  
   if (!A.isValidPersoana()) {
     cout << "Angajatul introdus este invalid!";
+    return;
+  }
+  Angajat exists = findAngajat(A.getCNP());
+
+  if (exists.isValidPersoana()) {
+    cout << "Exista deja un angajat cu CNP-ul: " << A.getCNP() << endl;
     return;
   }
 
@@ -108,9 +123,14 @@ void Farmacie::setClient(Client C) {
     cout << "Farmacia este invalida sau nu exista.";
     return;
   }
-  
   if (!C.isValidPersoana()) {
     cout << "Clientul introdus este invalid!";
+    return;
+  }
+  Client exists = findClient(C.getCNP());
+
+  if (exists.isValidPersoana()) {
+    cout << "Exista deja un client cu CNP-ul: " << C.getCNP() << endl;
     return;
   }
 
@@ -193,19 +213,19 @@ int Farmacie::getLengthClienti() {
 }
 
 // Find
-template <typename T>
-T Farmacie::findMedicament(string _name) {
-  // Pills
+Pastile Farmacie::findPastile(string _name) {
   for(int i = 0; i < depozitSize; i++) {
-    if (!pastile[i].isValidMedicament()) {
-      break;
-    }
+      if (!pastile[i].isValidMedicament()) {
+        break;
+      }
 
-    if (this->customCap(_name) == this->customCap(pastile[i].getNume())) {
-      return pastile[i];
+      if (this->customCap(_name) == this->customCap(pastile[i].getNume())) {
+        return pastile[i];
+      }
     }
-  }
-  // Syrups
+    return Pastile(); // Not found
+}
+Sirop Farmacie::findSirop(string _name) {
   for(int i = 0; i < depozitSize; i++) {
     if (!siropuri[i].isValidMedicament()) {
       break;
@@ -216,10 +236,32 @@ T Farmacie::findMedicament(string _name) {
     }
   }
 
-  return -1; // Not found
+  return Sirop(); // Not found
 }
-template <typename T>
-T Farmacie::findPersoana(unsigned long long int _CNP) {}
+Angajat Farmacie::findAngajat(unsigned long long int _CNP) {
+  for(int i = 0; i < personalSize; i++) {
+    if (!angajati[i].isValidPersoana()) {
+      break;
+    }
+
+    if (_CNP == angajati[i].getCNP()) {
+      return angajati[i];
+    }
+  }
+  return Angajat(); // Not found
+}
+Client Farmacie::findClient(unsigned long long int _CNP) {
+  for(int i = 0; i < C_MAX; i++) {
+    if (!clienti[i].isValidPersoana()) {
+      break;
+    }
+
+    if (_CNP == clienti[i].getCNP()) {
+      return clienti[i];
+    }
+  }
+  return Client(); // Not found
+}
 
 // Print
 string Farmacie::printEntitate() {

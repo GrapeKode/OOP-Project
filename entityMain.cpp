@@ -40,8 +40,6 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
          << "2. Editare entitate/firma\n"
          << "3. Stergere entitate/firma\n"
          << "4. Afisare entitate/firma\n"
-         << "5. Cautati medicament\n"
-         << "6. Stergere medicament\n"
          << "X. Meniul principal\n\n";
 
     cout << "Alegeti optiunea: ";
