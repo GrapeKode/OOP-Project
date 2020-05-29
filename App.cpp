@@ -3,15 +3,18 @@
 // Constructors
 App::App() {
     setAutoSave(true);
+    setAutoValidare(false);
     setCurrentComponent("Main");
 }
-App::App(bool _save, string _component) {
+App::App(bool _save, bool _autoValidare, string _component) {
     setAutoSave(_save);
     setCurrentComponent(_component);
+    setAutoValidare(_autoValidare);
 }
 
 // Setters
-void App::setAutoSave(bool _save){}
+void App::setAutoSave(bool _save) { autoSave = _save; }
+void App::setAutoValidare(bool _autoValidare) { autoValidare = _autoValidare; }
 void App::setCurrentComponent(string _component) {
     if (!isValidCurrentComponent(_component)) {
         cout << "Componenta selectata este incorecta.";
@@ -20,13 +23,46 @@ void App::setCurrentComponent(string _component) {
     currentComponent = _component;
 }
 
+// Saves
+template <typename T>
+void App::saveMedicament(T* Medicine) {
+
+}
+template <typename T>
+void App::savePersoana(T* Person) {}
+template <typename T>
+void App::saveEntitate(T* Entity) {}
+
 // Getters
-bool App::getAutoSave(){}
-string App::getCurrentComponent() {}
+bool App::getAutoValidare() { return autoValidare; }
+bool App::getAutoSave() { return autoSave; }
+string App::getCurrentComponent() { return currentComponent; }
 string App::getHeader() {
     system("cls");
     // isValidCurrentComponent("Main");
-    return "Aplicatia Farmacie\n\nNume: Ruben Ilciuc\nGrupa: 3124A\n\n\n";
+    return "Aplicatia Farmacie\t\t" + getCurrentComponent() + "\n\n";
+}
+string App::getSettings() {
+    return "Componenta selectata:\t" + this->getCurrentComponent() + "\n" +
+           "Auto salvare:\t\t" + (this->getAutoSave() ? "TRUE" : "FALSE") + "\n" +
+           "Auto validare:\t\t" + (this->getAutoValidare() ? "TRUE" : "FALSE") + "\n\n" +
+           "INFO:\n" +
+           "Auto salvare  - se salveaza automat intr-un fisier atunci cand se fac modificari.\n" +
+           "Auto validare - se valideaza automat o entitate atunci cand se creaza sau se editeaza.\n\n";
+}
+string App::getCurrentDir() {
+    char buffer[MAX_PATH];
+    GetModuleFileName( NULL, buffer, MAX_PATH );
+    string::size_type pos = string( buffer ).find_last_of( "\\/" );
+    return string( buffer ).substr( 0, pos);
+}
+bool App::mkdir(string fileName) {
+    if (CreateDirectory(fileName.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()) {
+        return true;
+    } else {
+        cout << "false";
+        return false;
+    }
 }
 
 // Validations
@@ -50,16 +86,21 @@ string App::customCap(string _str, bool _type) {
     }
     return result;
 }
+// template <typename T>
+string App::getPrecision(double value, int precision) {
+  std::stringstream result;
+  result << std::fixed << std::setprecision(precision) << value;
+
+  return result.str();
+}
 
 void App::Info()
 {
-    cout << "Aceasta aplicatie cuprinde 3 elemente de baza:\n"
-        << "1. Entitate - ce reprezinta o firma, o companie; in cazul nostru avem ca entitate o Farmacie\n"
-        << "\tAccesand aceasta categorie aplicatie se comporta din perspectiva unui angajator.\n\n"
-        << "2. Angajat - ex. farmacist\n"
-        << "\tCa si angajat atributele/sarcinile tale sunt de a colecta date despre posibili angajati si administrarea lor\n\n"
-        << "3. Client - ex. client intr-o farmacie\n"
-        << "\tCa si client tot ce poti face este sa ceri informatii sau faci anumite achizitii\n\n";
+    cout << "Tema aleasa:\t Farmacie" << endl
+         << "Numele:\t\t Ruben ILCIUC" << endl
+         << "Grupa:\t\t 3124A" << endl
+         << "Specializare:\t Calculatoare" << endl
+         << "Anul:\t\t II" << endl << endl;
 }
 
 void App::Exit() {
@@ -77,6 +118,19 @@ void App::Exit() {
 
 void App::Sleep(int ms) {
     usleep(ms * 1000);
+}
+
+// Auto validate
+template <typename T>
+void App::autoValidate(T* Entity) {
+    string currentComponent = getCurrentComponent();
+
+    if (!isValidCurrentComponent(currentComponent)) {
+        cout << "\nINFO: Auto-validarea nu functioneaza pentru componenta curenta: " << currentComponent << "\n\n";
+        return;
+    }
+
+    Entity.autoValidate();
 }
 
 // Destructor

@@ -5,9 +5,14 @@
 using namespace std;
 
 // Main Functions
-void Entity_add(Farmacie*);
-void Entity_edit(Farmacie*);
-void Entity_delete(Farmacie*);
+void Entity_create(App*, Farmacie*);
+void Entity_edit(App*, Farmacie*);
+void Entity_delete(App*, Farmacie*);
+void Entity_save(App*, Farmacie*);
+void Entity_import(App*, Farmacie*);
+
+// Recover entity
+bool Entity_recover(Farmacie*);
 
 // Setters
 void Entity_setName(Farmacie*);
@@ -17,13 +22,15 @@ void Entity_setDSize(Farmacie*);
 void Entity_setPSize(Farmacie*);
 
 // Getters
-string Entity_print(Farmacie*);
+void Entity_print(App*, Farmacie*);
 
 /**
  * Entity Management
  */
 void EntityManagement(App* Application, Farmacie* Pharmacy)
 {
+  Application->setCurrentComponent("Entity");
+
   bool exit = false;
   char opt;
   do
@@ -35,6 +42,8 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
          << "2. Editare entitate/firma\n"
          << "3. Stergere entitate/firma\n"
          << "4. Afisare entitate/firma\n"
+         << "5. Salvare entitate/firma\n"
+         << "6. Importare entitate/firma\n"
          << "X. Meniul principal\n\n";
 
     cout << "Alegeti optiunea: ";
@@ -44,25 +53,41 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
     case '1':
       cout << Application->getHeader();
       cout << "1. Creare entitate/firma\n\n";
-      Entity_add(Pharmacy);
+      Entity_create(Application, Pharmacy);
+      if (Application->getAutoValidare()) {
+        Pharmacy->autoValidate();
+      }
       getch();
       break;
     case '2':
       cout << Application->getHeader();
       cout << "2. Editare entitate/firma\n\n";
-      Entity_edit(Pharmacy);
+      if (Application->getAutoValidare()) {
+        Pharmacy->autoValidate();
+      }
+      Entity_edit(Application, Pharmacy);
       getch();
       break;
     case '3':
       cout << Application->getHeader();
       cout << "3. Stergere entitate/firma\n\n";
-      Entity_delete(Pharmacy);
+      Entity_delete(Application, Pharmacy);
       getch();
       break;
     case '4':
-      cout << Application->getHeader();
-      cout << "4. Afisare entitate/firma\n\n";
-      cout << Entity_print(Pharmacy);
+      Entity_print(Application, Pharmacy);
+      getch();
+      break;
+    case '5':
+      cout << Application->getHeader()
+           << "5. Salvare entitate/firma\n\n";
+      Entity_save(Application, Pharmacy);
+      getch();
+      break;
+    case '6':
+      cout << Application->getHeader()
+           << "6. Importare entitate/firma\n\n";
+      Entity_import(Application, Pharmacy);
       getch();
       break;
     case 'X':
@@ -82,7 +107,7 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
 }
 
 // Main Functions
-void Entity_add(Farmacie* Pharmacy)
+void Entity_create(App* Application, Farmacie* Pharmacy)
 {
   *Pharmacy = Farmacie();
 
@@ -92,10 +117,21 @@ void Entity_add(Farmacie* Pharmacy)
   Entity_setUuid(Pharmacy);
   Entity_setDSize(Pharmacy);
   Entity_setPSize(Pharmacy);
+
+  if (Pharmacy->isValidFarmacie()) {
+    cout << "\nEntitatea (" << Pharmacy->getNume() << ") a fost creata cu succes.";
+  } else {
+    cout << "Entitatea creata nu este valida.";
+  }
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
 }
-void Entity_edit(Farmacie* Pharmacy) {
+void Entity_edit(App* Application, Farmacie* Pharmacy) {
   if (!Pharmacy->isValidFarmacie()) {
-    cout << "Creati o entitate inainte de a o edita";
+    cout << "\n\nCreati o entitate inainte de a o edita";
     return;
   }
 
@@ -103,8 +139,7 @@ void Entity_edit(Farmacie* Pharmacy) {
   char opt;
 
   do {
-    system("cls");
-    cout << Pharmacy->getHeader();
+    cout << Application->getHeader();
     cout << "Editati entitatea curenta [" << Pharmacy->getId() << "] " << Pharmacy->getNume() << "\n\n";
     cout << "1. Editeaza numele entitatii\n"
          << "2. Editeaza locatia entitatii\n"
@@ -114,6 +149,7 @@ void Entity_edit(Farmacie* Pharmacy) {
 
     cout << "Alegeti optiunea:";
     cin >> opt;
+    cout << "\n\n";
 
     switch(opt) {
       case '1':
@@ -151,14 +187,80 @@ void Entity_edit(Farmacie* Pharmacy) {
       break;
     }
   } while(1);
-}
-void Entity_delete(Farmacie* Pharmacy) {
-  char remove;
-  cout << "Sunteti sigur ca doriti sa stergeti entitatea? (y/N): ";
-  cin >> remove;
-  if (toupper(remove) == 'Y') {
-    Pharmacy->setRemove(true);
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
   }
+}
+void Entity_delete(App* Application, Farmacie* Pharmacy) {
+  std::string remove;
+  bool isRecovered;
+
+  if (Pharmacy->isValidEntity() && Pharmacy->isRemovedEntity()) {
+    cout << "Entitatea a fost stearsa!\n\n";
+    isRecovered = Entity_recover(Pharmacy);
+
+    if (!isRecovered) {
+      cout << "Nu s-a putut recupera entitatea...";
+      return;
+    } else {
+      cout << "Entitatea a fost recuperata cu succes.";
+      return;
+    }
+  }
+
+  cout << Pharmacy->printEntitate()
+       << "\n\n"
+       << "Pentru a sterge introduceti numele entitatii: ";
+  cin.clear();
+  cin.ignore();
+  getline(cin, remove, '\n');
+
+  if (Pharmacy->customCap(remove) != Pharmacy->customCap(Pharmacy->getNume())) {
+    cout << "Numele introdus nu corespunde.";
+    return;
+  }
+
+  Pharmacy->setRemove(true);
+  cout << "\nEntitatea a fost stearsa cu succes.\n\n";
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
+}
+void Entity_save(App* Application, Farmacie* Pharmacy) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Entitatea curenta este invalida sau nu exista.";
+    return;
+  }
+  
+  Pharmacy->saveEntity();
+}
+void Entity_import(App* Application, Farmacie* Pharmacy) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Entitatea curenta este invalida sau nu exista.";
+    return;
+  }
+
+  Pharmacy->importEntity();
+}
+
+// Recover entity
+bool Entity_recover(Farmacie* Pharmacy) {
+  char recover;
+
+  cout << "Doriti s-o recuperati? (Y/n): ";
+  cin >> recover;
+
+  if (toupper(recover) == 'Y') {
+    Pharmacy->setRemove(false);
+
+    return true;
+  }
+
+  return false;
 }
 
 // Setters
@@ -166,6 +268,7 @@ void Entity_setName(Farmacie* Pharmacy)
 {
   std::string name;
   cout << "Inserati numele entitatii: ";
+  cin.clear();
   cin.ignore();
   getline(cin, name, '\n');
 
@@ -175,7 +278,8 @@ void Entity_setLocation(Farmacie* Pharmacy)
 {
   std::string location;
   cout << "Inserati adresa entitatii: ";
-  // cin.ignore();
+  cin.clear();
+  cin.ignore();
   getline(cin, location, '\n');
 
   Pharmacy->setLocatie(location);
@@ -185,12 +289,26 @@ void Entity_setUuid(Farmacie* Pharmacy)
   int uuid;
   cout << "Inserati id-ul entitatii: ";
   cin >> uuid;
+
+  if (std::cin.fail()) {
+    std::cin.clear();
+    std::cin.ignore(256, '\n');
+    return Entity_setUuid(Pharmacy);
+  }
+
   Pharmacy->setId(uuid);
 }
 void Entity_setDSize(Farmacie* Pharmacy) {
   int dSize;
   cout << "Introduceti numarul de medicamente disponibile in depozit: ";
   cin >> dSize;
+
+  if (std::cin.fail()) {
+    std::cin.clear();
+    std::cin.ignore(256, '\n');
+    return Entity_setDSize(Pharmacy);
+  }
+
   Pharmacy->setDepozitSize(dSize);
 }
 void Entity_setPSize(Farmacie* Pharmacy) {
@@ -201,6 +319,61 @@ void Entity_setPSize(Farmacie* Pharmacy) {
 }
 
 // Getters
-string Entity_print(Farmacie* Pharmacy) {
-  return Pharmacy->getEntitate();
+void Entity_print(App* Application, Farmacie* Pharmacy) {
+  char opt;
+  int pLen, sLen, aLen, cLen;
+
+  cout << Application->getHeader()
+       << "4. Afisare entitate/firma\n\n"
+       << Pharmacy->printEntitate()
+       << "1. Afisati pastilele\n"
+       << "2. Afisati siropurile\n"
+       << "3. Afisati angajatii\n"
+       << "4. Afisati clientii\n"
+       << "X. Iesire din modul afisare\n\n"
+       << "Alegeti optiunea: ";
+  cin >> opt;
+
+  switch(toupper(opt)) {
+  case '1':
+    pLen = Pharmacy->getLengthPastile();
+
+    cout << "\n\nPastile [" << pLen << "]:\n\n";
+    cout << Pharmacy->printPastile();
+
+    getch();
+    break;
+  case '2':
+    sLen = Pharmacy->getLengthSiropuri();
+
+    cout << "\n\nSiropuri [" << sLen << "]:\n\n";
+    cout << Pharmacy->printSiropuri();
+
+    getch();
+    break;
+  case '3':
+    aLen = Pharmacy->getLengthAngajati();
+
+    cout << "\n\nAngajati [" << aLen << "]:\n\n";
+    cout << Pharmacy->printAngajati();
+
+    getch();
+    break;
+  case '4':
+    cLen = Pharmacy->getLengthClienti();
+
+    cout << "\n\nClienti [" << cLen << "]:\n\n";
+    cout << Pharmacy->printClienti();
+
+    getch();
+    break;
+  case 'X':
+    return;
+  default:
+    cout << "Optiune invalida!";
+    getch();
+    break;
+  }
+
+  return Entity_print(Application, Pharmacy);;
 }

@@ -12,7 +12,7 @@
 #define S_MAX 100
 #define P_MAX 100
 #define A_MAX 20
-#define C_MAX 200
+#define C_MAX 1000
 
 class Farmacie : public Entitate
 {
@@ -24,13 +24,19 @@ public:
   Farmacie(Sirop, Pastile, Angajat, Client, int, int);
 
   // Setters
-  void setSirop(Sirop);
-  void setPastile(Pastile);
-  void setAngajat(Angajat);
-  void setClient(Client);
+  void setSirop(Sirop, int = -1);
+  void setPastile(Pastile, int = -1);
+  void setAngajat(Angajat, int = -1);
+  void setClient(Client, int = -1);
   void setDepozitSize(int);
   void setPersonalSize(int);
   void setRemove(bool);
+
+  // Remove
+  void removeSirop(int);
+  void removePastile(int);
+  void removeAngajat(int);
+  void removeClient(int);
 
   // Getters
   Sirop* getSirop();
@@ -40,18 +46,39 @@ public:
   int getDepozitSize();
   int getPersonalSize();
   bool isRemovedEntity();
-  // Get size
+  // Get length
   template <typename T>
   int getLengthMedicament(T);
   template <typename T>
-  int getLengthPersonal(T);
+  int getLengthPersonal(T, bool isEmployee = false);
+  //
+  int getLengthPastile();
+  int getLengthSiropuri();
+  int getLengthAngajati();
+  int getLengthClienti();
+  
+  // Index
+  int findIndexPastile(string);
+  int findIndexSirop(string);
+  int findIndexAngajat(unsigned long long int);
+  int findIndexClient(unsigned long long int);
+  // Get Item
+  Pastile findPastile(int);
+  Sirop findSirop(int);
+  Angajat findAngajat(int);
+  Client findClient(int);
 
   // Print
-  string getEntitate();
+  string printEntitate();
   template <typename T>
   string printMedicamente(T);
   template <typename T>
   string printPersoane(T);
+  // 
+  string printPastile();
+  string printSiropuri();
+  string printAngajati();
+  string printClienti();
 
   // Validations
   bool isValidFarmacie();
@@ -62,6 +89,15 @@ public:
 
   bool isValidDSize(int);
   bool isValidPSize(int);
+
+  // Auto validate
+  void autoValidate();
+  // Auto salvare
+  void autoSave();
+
+  // Save & Load
+  bool saveEntity(bool = false);
+  bool importEntity();
 
   // Utils
 

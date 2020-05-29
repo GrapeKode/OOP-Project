@@ -1,15 +1,17 @@
 # depslib dependency file v1.0
-1589623142 source:d:\fiesc\anul ii\semestrul ii\oop-project\angajat.cpp
+1590756561 source:d:\fiesc\anul ii\semestrul ii\oop-project\angajat.cpp
 	"Angajat.h"
 
-1589623100 d:\fiesc\anul ii\semestrul ii\oop-project\angajat.h
+1590604644 d:\fiesc\anul ii\semestrul ii\oop-project\angajat.h
 	"Persoana.h"
 
-1589623007 d:\fiesc\anul ii\semestrul ii\oop-project\persoana.h
+1590605330 d:\fiesc\anul ii\semestrul ii\oop-project\persoana.h
 	"App.h"
 
-1589645584 d:\fiesc\anul ii\semestrul ii\oop-project\app.h
+1590762183 d:\fiesc\anul ii\semestrul ii\oop-project\app.h
+	<windows.h>
 	<iostream>
+	<fstream>
 	<iomanip>
 	<algorithm>
 	<conio.h>
@@ -17,26 +19,27 @@
 	<cmath>
 	<string>
 	<unistd.h>
+	<sstream>
 
-1589645574 source:d:\fiesc\anul ii\semestrul ii\oop-project\app.cpp
+1590762201 source:d:\fiesc\anul ii\semestrul ii\oop-project\app.cpp
 	"App.h"
 
-1589623089 source:d:\fiesc\anul ii\semestrul ii\oop-project\client.cpp
+1590752920 source:d:\fiesc\anul ii\semestrul ii\oop-project\client.cpp
 	"Client.h"
 
-1589623066 d:\fiesc\anul ii\semestrul ii\oop-project\client.h
+1590605696 d:\fiesc\anul ii\semestrul ii\oop-project\client.h
 	"Persoana.h"
 
-1589658768 source:d:\fiesc\anul ii\semestrul ii\oop-project\entitate.cpp
+1590760454 source:d:\fiesc\anul ii\semestrul ii\oop-project\entitate.cpp
 	"Entitate.h"
 
-1589658590 d:\fiesc\anul ii\semestrul ii\oop-project\entitate.h
+1590684450 d:\fiesc\anul ii\semestrul ii\oop-project\entitate.h
 	"App.h"
 
-1589658754 source:d:\fiesc\anul ii\semestrul ii\oop-project\farmacie.cpp
+1590761822 source:d:\fiesc\anul ii\semestrul ii\oop-project\farmacie.cpp
 	"Farmacie.h"
 
-1589621575 d:\fiesc\anul ii\semestrul ii\oop-project\farmacie.h
+1590763201 d:\fiesc\anul ii\semestrul ii\oop-project\farmacie.h
 	"Entitate.h"
 	"Medicament.h"
 	"Pastile.h"
@@ -44,7 +47,7 @@
 	"Angajat.h"
 	"Client.h"
 
-1589659133 source:d:\fiesc\anul ii\semestrul ii\oop-project\main.cpp
+1590506475 source:d:\fiesc\anul ii\semestrul ii\oop-project\main.cpp
 	"App.h"
 	"Entitate.h"
 	"Farmacie.h"
@@ -53,40 +56,38 @@
 	"Client.h"
 	"Medicament.h"
 
-1589632628 d:\fiesc\anul ii\semestrul ii\oop-project\medicament.h
+1590683659 d:\fiesc\anul ii\semestrul ii\oop-project\medicament.h
 	"App.h"
 
-1589658155 source:d:\fiesc\anul ii\semestrul ii\oop-project\medicament.cpp
+1590753179 source:d:\fiesc\anul ii\semestrul ii\oop-project\medicament.cpp
 	"Medicament.h"
 
-1589659338 source:d:\fiesc\anul ii\semestrul ii\oop-project\pastile.cpp
+1590753101 source:d:\fiesc\anul ii\semestrul ii\oop-project\pastile.cpp
 	"Pastile.h"
 
-1589471686 d:\fiesc\anul ii\semestrul ii\oop-project\pastile.h
+1590684565 d:\fiesc\anul ii\semestrul ii\oop-project\pastile.h
 	"Medicament.h"
 
-1589623010 source:d:\fiesc\anul ii\semestrul ii\oop-project\persoana.cpp
+1590752860 source:d:\fiesc\anul ii\semestrul ii\oop-project\persoana.cpp
 	"Persoana.h"
 
-1589659354 source:d:\fiesc\anul ii\semestrul ii\oop-project\sirop.cpp
+1590753071 source:d:\fiesc\anul ii\semestrul ii\oop-project\sirop.cpp
 	"Sirop.h"
 
-1589471674 d:\fiesc\anul ii\semestrul ii\oop-project\sirop.h
+1590683812 d:\fiesc\anul ii\semestrul ii\oop-project\sirop.h
 	"Medicament.h"
 
-1589645981 source:d:\fiesc\anul ii\semestrul ii\oop-project\clientmain.cpp
+1590763686 source:d:\fiesc\anul ii\semestrul ii\oop-project\clientmain.cpp
 	"Farmacie.h"
-	"Client.h"
 
-1589645975 source:d:\fiesc\anul ii\semestrul ii\oop-project\employeemain.cpp
+1590763627 source:d:\fiesc\anul ii\semestrul ii\oop-project\employeemain.cpp
 	"Farmacie.h"
-	"Angajat.h"
 
-1589647181 source:d:\fiesc\anul ii\semestrul ii\oop-project\entitymain.cpp
+1590763783 source:d:\fiesc\anul ii\semestrul ii\oop-project\entitymain.cpp
 	"App.h"
 	"Farmacie.h"
 
-1589658980 source:d:\fiesc\anul ii\semestrul ii\oop-project\medicinemain.cpp
+1590763570 source:d:\fiesc\anul ii\semestrul ii\oop-project\medicinemain.cpp
 	"Farmacie.h"
 	"Sirop.h"
 	"Pastile.h"

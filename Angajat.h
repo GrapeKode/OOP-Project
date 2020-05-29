@@ -11,26 +11,35 @@ class Angajat : public Persoana
 public:
   Angajat();
   Angajat(unsigned int _uuid, string _grad, string _locatie, int _program, double _salariu);
+  
   // Setters
   void setUuid(unsigned int _uuid);
   void setSalariu(double _salariu);
   void setProgram(int _program);
   void setLocatie(string _locatie);
   void setGrad(string _grad);
+  
   // Getters
   unsigned int getUuid();
   double getSalariu();
   int getProgram();
   string getLocatie();
   string getGrad();
+  
   // Print
   string getPersoana();
+  
   // Validations
+  bool isValidPersoana();
   bool isValidUuid(unsigned int _uuid);
   bool isValidSalariu(double _salariu);
   bool isValidProgram(int _program);
   bool isValidLocatie(string _locatie);
   bool isValidGrad(string _grad);
+
+  // Auto Validate
+  void autoValidate();
+  
   // Destructor
   virtual ~Angajat();
 
@@ -41,6 +50,12 @@ private:
   int program;
   string locatie;
   string grad;
+
+  // Generic Data
+  double getValidSalariu();
+  int getValidProgram();
+  string getValidLocation();
+  string getValidGrad();
 };
 
 #endif // ANGAJAT_H

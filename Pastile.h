@@ -27,6 +27,9 @@ public:
   bool isValidNr(int);
   bool isValidTip(string);
   bool isValidCuloare(string);
+
+  // Auto validate
+  void autoValidate();
   
   // Destructor
   virtual ~Pastile();
@@ -38,6 +41,10 @@ private:
   string tip;       // Tablete / Flacon
   string culoare;   // Albastru, rosu
 
+  // Generic Data
+  int getValidNr();
+  string getValidTip();
+  string getValidCuloare();
 };
 
 #endif // PASTILE_H

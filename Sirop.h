@@ -29,6 +29,9 @@ public:
   bool isValidTip(string);
   bool isValidCuloare(string);
 
+  // Auto validate
+  void autoValidate();
+
   // Utils
   
   // Destructor
@@ -40,6 +43,11 @@ private:
   int cantitate;        // Ex.: 50 ml
   string tip;           // Flacon | Pliculete
   string culoare;       // ...
+
+  // Generic Data
+  int getValidCantitate();
+  string getValidTip();
+  string getValidCuloare();
 };
 
 #endif // SIROP_H
