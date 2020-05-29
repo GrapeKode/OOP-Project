@@ -30,6 +30,9 @@ public:
   bool isValidPersoana();
   bool isValidRecomandare(string _recomandare);
   bool isValidReteta(string _reteta);
+
+  // Auto validate
+  void autoValidate();
   
   // Destructor
   virtual ~Client();
@@ -38,9 +41,13 @@ protected:
 private:
   // unsigned int card;
   bool client_fidel;
-  int len_reteta;
+  // int len_reteta;
   string recomandare;
   string reteta;
+
+  // Generic Data
+  string getValidRecomandare();
+  string getValidReteta();
 };
 
 #endif // CLIENT_H

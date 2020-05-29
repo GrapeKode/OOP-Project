@@ -25,13 +25,13 @@ void App::setCurrentComponent(string _component) {
 
 // Saves
 template <typename T>
-void App::saveMedicament(T*) {
+void App::saveMedicament(T* Medicine) {
 
 }
 template <typename T>
-void App::savePersoana(T*) {}
+void App::savePersoana(T* Person) {}
 template <typename T>
-void App::saveEntitate(T*) {}
+void App::saveEntitate(T* Entity) {}
 
 // Getters
 bool App::getAutoValidare() { return autoValidare; }
@@ -50,7 +50,20 @@ string App::getSettings() {
            "Auto salvare  - se salveaza automat intr-un fisier atunci cand se fac modificari.\n" +
            "Auto validare - se valideaza automat o entitate atunci cand se creaza sau se editeaza.\n\n";
 }
-
+string App::getCurrentDir() {
+    char buffer[MAX_PATH];
+    GetModuleFileName( NULL, buffer, MAX_PATH );
+    string::size_type pos = string( buffer ).find_last_of( "\\/" );
+    return string( buffer ).substr( 0, pos);
+}
+bool App::mkdir(string fileName) {
+    if (CreateDirectory(fileName.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()) {
+        return true;
+    } else {
+        cout << "false";
+        return false;
+    }
+}
 
 // Validations
 bool App::isValidCurrentComponent(string _component) {
@@ -83,13 +96,6 @@ string App::getPrecision(double value, int precision) {
 
 void App::Info()
 {
-    // cout << "Aceasta aplicatie cuprinde 3 elemente de baza:\n"
-    //     << "1. Entitate - ce reprezinta o firma, o companie; in cazul nostru avem ca entitate o Farmacie\n"
-    //     << "\tAccesand aceasta categorie aplicatie se comporta din perspectiva unui angajator.\n\n"
-    //     << "2. Angajat - ex. farmacist\n"
-    //     << "\tCa si angajat atributele/sarcinile tale sunt de a colecta date despre posibili angajati si administrarea lor\n\n"
-    //     << "3. Client - ex. client intr-o farmacie\n"
-    //     << "\tCa si client tot ce poti face este sa ceri informatii sau faci anumite achizitii\n\n";
     cout << "Tema aleasa:\t Farmacie" << endl
          << "Numele:\t\t Ruben ILCIUC" << endl
          << "Grupa:\t\t 3124A" << endl
@@ -112,6 +118,19 @@ void App::Exit() {
 
 void App::Sleep(int ms) {
     usleep(ms * 1000);
+}
+
+// Auto validate
+template <typename T>
+void App::autoValidate(T* Entity) {
+    string currentComponent = getCurrentComponent();
+
+    if (!isValidCurrentComponent(currentComponent)) {
+        cout << "\nINFO: Auto-validarea nu functioneaza pentru componenta curenta: " << currentComponent << "\n\n";
+        return;
+    }
+
+    Entity.autoValidate();
 }
 
 // Destructor

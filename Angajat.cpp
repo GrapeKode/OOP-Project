@@ -4,10 +4,10 @@
 Angajat::Angajat()
 {
   uuid = 0;
-  grad = "undefined";
+  grad = "unknown";
   program = 0;
   salariu = 0;
-  locatie = "undefined";
+  locatie = "unknown";
 }
 Angajat::Angajat(unsigned int _uuid, string _grad, string _locatie, int _program, double _salariu)
 {
@@ -47,8 +47,41 @@ bool Angajat::isValidPersoana() { return this->isValidInitPersoana() && isValidS
 bool Angajat::isValidUuid(unsigned int _uuid) { return _uuid > 0; }
 bool Angajat::isValidSalariu(double _salariu) { return _salariu > 0; }
 bool Angajat::isValidProgram(int _program) { return _program >= 4 && _program <= 8; }
-bool Angajat::isValidLocatie(string _locatie) { return _locatie.length() > 0; }
-bool Angajat::isValidGrad(string _grad) { return _grad.length() > 0; }
+bool Angajat::isValidLocatie(string _locatie) { return _locatie != "unknown" && _locatie.length() > 0; }
+bool Angajat::isValidGrad(string _grad) { return _grad != "unknown" && _grad.length() > 0; }
+
+// Auto Validate
+void Angajat::autoValidate() {
+  // Person auto-validate
+  if (!this->isValidNume(this->getNume())) {
+    this->setNume(getValidNume());
+  }
+  if (!this->isValidNume(this->getPrenume())) {
+    this->setPrenume(getValidPrenume());
+  }
+  if (!this->isValidCNP(this->getCNP())) {
+    this->setCNP(getValidCNP());
+  }
+  // Employee auto-validate
+  if (!this->isValidSalariu(this->getSalariu())) {
+    this->setSalariu(getValidSalariu());
+  }
+  if (!this->isValidProgram(this->getProgram())) {
+    this->setProgram(getValidProgram());
+  }
+  if (!this->isValidLocatie(this->getLocatie())) {
+    this->setLocatie(getValidLocation());
+  }
+  if (!this->isValidGrad(this->getGrad())) {
+    this->setGrad(getValidGrad());
+  }
+}
+
+// Generic Data #PRIVATE
+double Angajat::getValidSalariu() { return 2000; }
+int Angajat::getValidProgram() { return  6; }
+string Angajat::getValidLocation() { return "1234 Main Street"; }
+string Angajat::getValidGrad() { return "Farmacist"; }
 
 // Destructor
 Angajat::~Angajat()

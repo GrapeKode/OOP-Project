@@ -1,6 +1,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include <windows.h>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -43,6 +44,8 @@ public:
   string getCurrentComponent();
   string getSettings();
   string getHeader();
+  string getCurrentDir();
+  bool mkdir(string);
 
   // Validations
   bool isValidCurrentComponent(string _component);
@@ -51,6 +54,10 @@ public:
   string customCap(string _str, bool _type = false);
   // template <typename T>
   string getPrecision(double, int = 2);
+
+  // Auto validate
+  template <typename T>
+  void autoValidate(T*);
 
   // Destructor
   virtual ~App();

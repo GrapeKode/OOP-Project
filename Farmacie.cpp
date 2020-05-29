@@ -35,7 +35,7 @@ Farmacie::Farmacie(Sirop S, Pastile P, Angajat A, Client C, int _dSize, int _pSi
 }
 
 // Setters
-void Farmacie::setSirop(Sirop S) {
+void Farmacie::setSirop(Sirop S, int itemIndex) {
   if (!this->isValidFarmacie()) {
     cout << "Farmacia este invalida sau nu exista.";
     return;
@@ -44,26 +44,35 @@ void Farmacie::setSirop(Sirop S) {
       cout << "Siropul introdus este invalid!";
       return;
   }
-  Sirop exists = findSirop(S.getNume());
+  int exists = findIndexSirop(S.getNume());
 
-  if (exists.isValidMedicament()) {
+  if (exists > -1 && itemIndex == -1) {
     cout << "Exista deja un medicament cu numele: " << S.getNume() << endl;
     return;
   }
 
   int total = getLengthMedicament(pastile);
-  int index = getLengthMedicament(siropuri) + total;
+  int index = getLengthMedicament(siropuri);
 
-  if (index <= -1 || index > depozitSize) {
+  // Set specific index
+  if (itemIndex > -1) {
+    index = itemIndex;
+  }
+
+  if (itemIndex == -1 && (index <= -1 || index + total >= depozitSize)) {
     cout << "Spatiu insuficient.";
     return;
   }
 
   siropuri[index] = S;
 
-  cout << "Medicamentul a fost adaugat cu succes.";
+  if (itemIndex == -1) {
+    cout << "Medicamentul a fost adaugat cu succes.";
+  } else {
+    cout << "Medicamentul a fost editat cu succes.";
+  }
 }
-void Farmacie::setPastile(Pastile P) {
+void Farmacie::setPastile(Pastile P, int itemIndex) {
   if (!this->isValidFarmacie()) {
     cout << "Farmacia este invalida sau nu exista.";
     return;
@@ -72,26 +81,35 @@ void Farmacie::setPastile(Pastile P) {
     cout << "Pastilele introduse sunt invalide!";
     return;
   }
-  Pastile exists = findPastile(P.getNume());
+  int exists = findIndexPastile(P.getNume());
 
-  if (exists.isValidMedicament()) {
+  if (exists > -1 && itemIndex == -1) {
     cout << "Exista deja un medicament cu numele: " << P.getNume() << endl;
     return;
   }
 
   int total = getLengthMedicament(siropuri);
-  int index = getLengthMedicament(pastile) + total;
+  int index = getLengthMedicament(pastile);
 
-  if (index <= -1 || index > depozitSize) {
+  // Set specific index
+  if (itemIndex > -1) {
+    index = itemIndex;
+  }
+
+  if (itemIndex == -1 && (index <= -1 || index + total >= depozitSize)) {
     cout << "Spatiu insuficient.";
     return;
   }
 
   pastile[index] = P;
 
-  cout << "Medicamentul a fost adaugat cu succes.";
+  if (itemIndex == -1) {
+    cout << "Medicamentul a fost adaugat cu succes.";
+  } else {
+    cout << "Medicamentul a fost editat cu succes.";
+  }
 }
-void Farmacie::setAngajat(Angajat A) {
+void Farmacie::setAngajat(Angajat A, int itemIndex) {
   if (!this->isValidFarmacie()) {
     cout << "Farmacia este invalida sau nu exista.";
     return;
@@ -100,25 +118,34 @@ void Farmacie::setAngajat(Angajat A) {
     cout << "Angajatul introdus este invalid!";
     return;
   }
-  Angajat exists = findAngajat(A.getCNP());
+  int exists = findIndexAngajat(A.getCNP());
 
-  if (exists.isValidPersoana()) {
+  if (exists > -1 && itemIndex == -1) {
     cout << "Exista deja un angajat cu CNP-ul: " << A.getCNP() << endl;
     return;
   }
 
   int index = getLengthPersonal(angajati, true);
 
-  if (index == -1) {
+  // Set specific index
+  if (itemIndex > -1) {
+    index = itemIndex;
+  }
+
+  if (itemIndex == -1 && (index <= -1 || index > personalSize)) {
     cout << "Spatiu insuficient.";
     return;
   }
 
   angajati[index] = A;
 
-  cout << "Angajatul a fost adaugat cu succes.";
+  if (itemIndex == -1) {
+    cout << "Angajatul a fost adaugat cu succes.";
+  } else {
+    cout << "Angajatul a fost editat cu succes.";
+  }
 }
-void Farmacie::setClient(Client C) {
+void Farmacie::setClient(Client C, int itemIndex) {
   if (!this->isValidFarmacie()) {
     cout << "Farmacia este invalida sau nu exista.";
     return;
@@ -127,27 +154,64 @@ void Farmacie::setClient(Client C) {
     cout << "Clientul introdus este invalid!";
     return;
   }
-  Client exists = findClient(C.getCNP());
+  int exists = findIndexClient(C.getCNP());
 
-  if (exists.isValidPersoana()) {
+  if (exists > -1 && itemIndex == -1) {
     cout << "Exista deja un client cu CNP-ul: " << C.getCNP() << endl;
     return;
   }
 
   int index = getLengthPersonal(clienti);
 
-  if (index == -1) {
+  // Set specific index
+  if (itemIndex > -1) {
+    index = itemIndex;
+  }
+
+  if (index <= -1 && itemIndex == -1) {
     cout << "Spatiu insuficient.";
     return;
   }
 
   clienti[index] = C;
 
-  cout << "Clientul a fost adaugat cu succes.";
+  if (itemIndex == -1) {
+    cout << "Clientul a fost adaugat cu succes.";
+  } else {
+    cout << "Clientul a fost editat cu succes.";
+  }
 }
 void Farmacie::setDepozitSize(int _dSize) { depozitSize = isValidDSize(_dSize) ? _dSize : S_MAX + P_MAX; }
 void Farmacie::setPersonalSize(int _pSize) { personalSize = isValidPSize(_pSize) ? _pSize : A_MAX; }
 void Farmacie::setRemove(bool _remove) { isRemoved = _remove; }
+// Remove
+void Farmacie::removeSirop(int _index) {
+  for (int i = _index + 1; i < depozitSize; i++) {
+    siropuri[i-1] = siropuri[i];
+    siropuri[i] = Sirop();
+  }
+}
+void Farmacie::removePastile(int _index) {
+  bool stopExc = false;
+  for (int i = _index + 1; i < depozitSize; i++) {
+    if (stopExc) { break; }
+    pastile[i-1] = pastile[i];
+    if (!pastile[i].isValidMedicament()) { break; }
+    // pastile[i] = Pastile();
+  }
+}
+void Farmacie::removeAngajat(int _index) {
+  for (int i = _index + 1; i < personalSize; i++) {
+    angajati[i-1] = angajati[i];
+    angajati[i] = Angajat();
+  }
+}
+void Farmacie::removeClient(int _index) {
+  for (int i = _index + 1; i < C_MAX; i++) {
+    clienti[i-1] = clienti[i];
+    clienti[i] = Client();
+  }
+}
 
 // Getters
 Sirop* Farmacie::getSirop() { return siropuri; }
@@ -212,56 +276,61 @@ int Farmacie::getLengthClienti() {
   return index;
 }
 
-// Find
-Pastile Farmacie::findPastile(string _name) {
+// Index
+int Farmacie::findIndexPastile(string _name) {
   for(int i = 0; i < depozitSize; i++) {
-      if (!pastile[i].isValidMedicament()) {
-        break;
-      }
-
-      if (this->customCap(_name) == this->customCap(pastile[i].getNume())) {
-        return pastile[i];
-      }
+    if (!pastile[i].isValidMedicament()) {
+      break;
     }
-    return Pastile(); // Not found
+
+    if (this->customCap(_name) == this->customCap(pastile[i].getNume())) {
+      return i;
+    }
+  }
+  return -1; // Not found
 }
-Sirop Farmacie::findSirop(string _name) {
+int Farmacie::findIndexSirop(string _name) {
   for(int i = 0; i < depozitSize; i++) {
     if (!siropuri[i].isValidMedicament()) {
       break;
     }
 
     if (this->customCap(_name) == this->customCap(siropuri[i].getNume())) {
-      return siropuri[i];
+      return i;
     }
   }
 
-  return Sirop(); // Not found
+  return -1; // Not found
 }
-Angajat Farmacie::findAngajat(unsigned long long int _CNP) {
+int Farmacie::findIndexAngajat(unsigned long long int _CNP) {
   for(int i = 0; i < personalSize; i++) {
     if (!angajati[i].isValidPersoana()) {
       break;
     }
 
     if (_CNP == angajati[i].getCNP()) {
-      return angajati[i];
+      return i;
     }
   }
-  return Angajat(); // Not found
+  return -1; // Not found
 }
-Client Farmacie::findClient(unsigned long long int _CNP) {
+int Farmacie::findIndexClient(unsigned long long int _CNP) {
   for(int i = 0; i < C_MAX; i++) {
     if (!clienti[i].isValidPersoana()) {
       break;
     }
 
     if (_CNP == clienti[i].getCNP()) {
-      return clienti[i];
+      return i;
     }
   }
-  return Client(); // Not found
+  return -1; // Not found
 }
+// Get Item
+Pastile Farmacie::findPastile(int _index) { return pastile[_index]; }
+Sirop Farmacie::findSirop(int _index) { return siropuri[_index]; }
+Angajat Farmacie::findAngajat(int _index) { return angajati[_index]; }
+Client Farmacie::findClient(int _index) { return clienti[_index]; }
 
 // Print
 string Farmacie::printEntitate() {
@@ -312,6 +381,67 @@ string Farmacie::printClienti() { return this->printPersoane(clienti); }
 bool Farmacie::isValidFarmacie() { return !isRemoved && this->isValidEntity(); }
 bool Farmacie::isValidDSize(int _dSize) { return _dSize > 0; }
 bool Farmacie::isValidPSize(int _pSize) { return _pSize > 0; }
+
+// Auto validate
+void Farmacie::autoValidate() {
+  if (!this->isValidId(this->getId())) {
+    this->setId(getValidId());
+  }
+  if (!this->isValidNume(this->getNume())) {
+    this->setNume(getValidNume());
+  }
+  if (!this->isValidLocatie(this->getLocatie())) {
+    this->setLocatie(getValidLocatie());
+  }
+}
+// Auto salvare
+void Farmacie::autoSave() {}
+
+// Save & Load
+bool Farmacie::saveEntity(bool sleep) {
+  if (!this->mkdir(getNume())) {
+    cout << "\n\nWARNING: Nu s-a putut crea folder-ul `" << getNume() << "`. Asigurati-va ca programul are permisiunea de a crea.";
+    return false;
+  }
+  string path = getNume() + "\\";
+  ofstream entityFile, medicineFile, employeeFile, clientFile;
+
+  // Entity
+  entityFile.open(path + "entitate.txt");
+  entityFile << printEntitate();
+  entityFile.close();
+
+  // Medicines
+  medicineFile.open(path + "medicamente.txt");
+  medicineFile << printMedicamente(pastile) + "\n" + printMedicamente(siropuri);
+  medicineFile.close();
+
+  // Employees
+  employeeFile.open(path + "angajati.txt");
+  employeeFile << printAngajati();
+  employeeFile.close();
+
+  // Clients
+  clientFile.open(path + "clienti.txt");
+  clientFile << printClienti();
+  clientFile.close();
+
+  if (sleep) {
+    cout << "\nINFO: Se salveaza datele...";
+    this->Sleep(500);
+    cout << "\nINFO: Datele au fost salvate in folder-ul `" << getNume() << "`.";
+  } else {
+    cout << "\nINFO: Salvata automat.";
+  }
+
+  return true;
+}
+bool Farmacie::importEntity() {
+  cout << "WARNING: Functionalitatea importatii unei entitati nu a fost creata."
+       << " Pentru mai multe detalii contactati persoana responsabila.\n"
+       << "INFO: Datele despre persoana responsabila le gasiti in meniul principal la sectiunea `Info`."
+       << "\n\n";
+}
 
 // Utils
 

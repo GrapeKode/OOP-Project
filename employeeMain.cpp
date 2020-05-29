@@ -8,6 +8,10 @@ void Employee_create(App*, Farmacie*, Angajat*);
 void Employee_add(App*, Farmacie*, Angajat*);
 void Employee_edit(App*, Farmacie*, Angajat*);
 void Employee_delete(App*, Farmacie*, Angajat*);
+// Farmacie
+void Employee_findP(App*, Farmacie*, Angajat*);
+void Employee_editP(App*, Farmacie*, Angajat*);
+void Employee_deleteP(App*, Farmacie*, Angajat*);
 
 // Setters
 void Employee_setUuid(Farmacie*, Angajat*);
@@ -20,6 +24,9 @@ void Employee_setRank(Angajat*);
 
 // Getters
 string Employee_print(App*, Farmacie*, Angajat*);
+
+// Utils
+unsigned long long int Employee_getCNP(Angajat*);
 
 /**
  * Employee Management
@@ -41,7 +48,10 @@ void EmployeeManagement(App* Application, Farmacie* Pharmacy, Angajat* Employee)
          << "2. Editare angajat\n"
          << "3. Stergere angajat\n"
          << "4. Afisare anajat\n"
-         << "5. Adaugare angajat\n"
+         << "5. Adaugare in baza de date\n"
+         << "6. Cautare in baza de date\n"
+         << "7. Editare din baza de date\n"
+         << "8. Stergere din baza de date\n"
          << "X. Meniul principal\n\n";
 
     cout << "Alegeti optiunea: ";
@@ -52,12 +62,18 @@ void EmployeeManagement(App* Application, Farmacie* Pharmacy, Angajat* Employee)
       cout << Application->getHeader();
       cout << "1. Adaugare angajat\n\n";
       Employee_create(Application, Pharmacy, Employee);
+      if (Application->getAutoValidare()) {
+        Employee->autoValidate();
+      }
       getch();
       break;
     case '2':
       cout << Application->getHeader();
       cout << "2. Editare angajat\n\n";
       Employee_edit(Application, Pharmacy, Employee);
+      if (Application->getAutoValidare()) {
+        Employee->autoValidate();
+      }
       getch();
       break;
     case '3':
@@ -74,8 +90,26 @@ void EmployeeManagement(App* Application, Farmacie* Pharmacy, Angajat* Employee)
       break;
     case '5':
       cout << Application->getHeader();
-      cout << "5. Adaugare angajat\n\n";
+      cout << "5. Adaugare angajat in baza de date\n\n";
       Employee_add(Application, Pharmacy, Employee);
+      getch();
+      break;
+    case '6':
+      cout << Application->getHeader();
+      cout << "6. Cautare angajat in baza de date\n\n";
+      Employee_findP(Application, Pharmacy, Employee);
+      getch();
+      break;
+    case '7':
+      cout << Application->getHeader();
+      cout << "7. Editare angajat din baza de date\n\n";
+      Employee_editP(Application, Pharmacy, Employee);
+      getch();
+      break;
+    case '8':
+      cout << Application->getHeader();
+      cout << "8. Stergere angajat din baza de date\n\n";
+      Employee_deleteP(Application, Pharmacy, Employee);
       getch();
       break;
     case 'X':
@@ -122,6 +156,11 @@ void Employee_add(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
   }
 
   Pharmacy->setAngajat(*Employee);
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
 }
 void Employee_edit(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
   char opt;
@@ -189,6 +228,97 @@ void Employee_delete(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
 
   cout << "Numele introdus nu corespunde.";
 }
+// Farmacie
+void Employee_findP(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
+  char allow;
+
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Farmacia nu exista sau este invalida.";
+    return;
+  }
+  cout << "WARNING: Aceasta actiune va sterge angajatul curent! Continuati? (y/N): ";
+  cin >> allow;
+  if (toupper(allow) == 'N') {
+    return;
+  }
+
+  unsigned long long int CNP = Employee_getCNP(Employee);
+  int findIndex;
+  Angajat SecondEmployee;
+
+  findIndex = Pharmacy->findIndexAngajat(CNP);
+  if (findIndex == -1) {
+    cout << "INFO: Angajatul nu a fost gasit.";
+    return;
+  }
+  SecondEmployee = Pharmacy->findAngajat(findIndex);
+  if (!SecondEmployee.isValidPersoana()) {
+    cout << "INFO: Angajatul nu exista in baza de date sau este invalid.";
+    return;
+  }
+
+  *Employee = SecondEmployee;
+  cout << "INFO: Angajatul a fost gasit.\n\n"
+       << SecondEmployee.getPersoana();
+}
+void Employee_editP(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Farmacia nu exista sau este invalida.";
+    return;
+  }
+
+  unsigned long long int CNP = Employee_getCNP(Employee);
+  int findIndex;
+  Angajat SecondEmployee;
+
+  findIndex = Pharmacy->findIndexAngajat(CNP);
+  if (findIndex == -1) {
+    cout << "INFO: Angajatul nu a fost gasit.";
+    return;
+  }
+  SecondEmployee = Pharmacy->findAngajat(findIndex);
+  if (!SecondEmployee.isValidPersoana()) {
+    cout << "INFO: Angajatul nu exista in baza de date sau este invalid.";
+    return;
+  }
+
+  Employee_edit(Application, Pharmacy, &SecondEmployee);
+  Pharmacy->setAngajat(SecondEmployee, findIndex);
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
+}
+void Employee_deleteP(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Farmacia nu exista sau este invalida.";
+    return;
+  }
+
+  unsigned long long int CNP = Employee_getCNP(Employee);
+  int findIndex;
+  Angajat SecondEmployee;
+
+  findIndex = Pharmacy->findIndexAngajat(CNP);
+  if (findIndex == -1) {
+    cout << "INFO: Angajatul nu a fost gasit.";
+    return;
+  }
+  SecondEmployee = Pharmacy->findAngajat(findIndex);
+  if (!SecondEmployee.isValidPersoana()) {
+    cout << "INFO: Angajatul nu exista in baza de date sau este invalid.";
+    return;
+  }
+
+  Pharmacy->removeAngajat(findIndex);
+  cout << "INFO: Angajatul a fost sters cu succes.";
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
+}
 
 // Setters
 void Employee_setUuid(Farmacie* Pharmacy, Angajat* Employee) {
@@ -206,13 +336,13 @@ void Employee_setName(Angajat* Employee) {
   string firstName, lastName;
 
   cout << "Introduceti prenumele: ";
-  cin.ignore();
+  cin.clear();
   cin.ignore();
   getline(cin, firstName, '\n');
 
   cout << "Introduceti numele de familie: ";
-  cin.ignore();
-  cin.ignore();
+  cin.clear();
+  // cin.ignore();
   getline(cin, lastName, '\n');
 
   Employee->setPrenume(firstName);
@@ -278,7 +408,7 @@ void Employee_setRank(Angajat* Employee) {
   std::string rank;
 
   cout << "Introduceti gradul angajatului: ";
-  cin.ignore();
+  cin.clear();
   cin.ignore();
   getline(cin, rank, '\n');
 
@@ -292,4 +422,20 @@ void Employee_setRank(Angajat* Employee) {
 // Getters
 string Employee_print(App* Application, Farmacie* Pharmacy, Angajat* Employee) {
   return Employee->getPersoana();
+}
+
+// Utils
+unsigned long long int Employee_getCNP(Angajat* Employee) {
+  unsigned long long int CNP;
+
+  cout << "Introduceti CNP-ul (13 cifre): ";
+  cin >> CNP;
+
+  if (std::cin.fail() || !Employee->isValidCNP(CNP)) {
+    std::cin.clear();
+    std::cin.ignore(256, '\n');
+    return Employee_getCNP(Employee);
+  }
+
+  return CNP;
 }

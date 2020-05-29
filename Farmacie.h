@@ -24,19 +24,19 @@ public:
   Farmacie(Sirop, Pastile, Angajat, Client, int, int);
 
   // Setters
-  void setSirop(Sirop);
-  void setPastile(Pastile);
-  void setAngajat(Angajat);
-  void setClient(Client);
+  void setSirop(Sirop, int = -1);
+  void setPastile(Pastile, int = -1);
+  void setAngajat(Angajat, int = -1);
+  void setClient(Client, int = -1);
   void setDepozitSize(int);
   void setPersonalSize(int);
   void setRemove(bool);
 
   // Remove
-  void removeSirop(Sirop*);
-  void removePastile(Pastile*);
-  void removeAngajat(Angajat*);
-  void removeClient(Client*);
+  void removeSirop(int);
+  void removePastile(int);
+  void removeAngajat(int);
+  void removeClient(int);
 
   // Getters
   Sirop* getSirop();
@@ -46,7 +46,7 @@ public:
   int getDepozitSize();
   int getPersonalSize();
   bool isRemovedEntity();
-  // Get size
+  // Get length
   template <typename T>
   int getLengthMedicament(T);
   template <typename T>
@@ -57,11 +57,16 @@ public:
   int getLengthAngajati();
   int getLengthClienti();
   
-  // Find
-  Pastile findPastile(string);
-  Sirop findSirop(string);
-  Angajat findAngajat(unsigned long long int);
-  Client findClient(unsigned long long int);
+  // Index
+  int findIndexPastile(string);
+  int findIndexSirop(string);
+  int findIndexAngajat(unsigned long long int);
+  int findIndexClient(unsigned long long int);
+  // Get Item
+  Pastile findPastile(int);
+  Sirop findSirop(int);
+  Angajat findAngajat(int);
+  Client findClient(int);
 
   // Print
   string printEntitate();
@@ -84,6 +89,15 @@ public:
 
   bool isValidDSize(int);
   bool isValidPSize(int);
+
+  // Auto validate
+  void autoValidate();
+  // Auto salvare
+  void autoSave();
+
+  // Save & Load
+  bool saveEntity(bool = false);
+  bool importEntity();
 
   // Utils
 

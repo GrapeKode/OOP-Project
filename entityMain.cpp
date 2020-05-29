@@ -8,6 +8,8 @@ using namespace std;
 void Entity_create(App*, Farmacie*);
 void Entity_edit(App*, Farmacie*);
 void Entity_delete(App*, Farmacie*);
+void Entity_save(App*, Farmacie*);
+void Entity_import(App*, Farmacie*);
 
 // Recover entity
 bool Entity_recover(Farmacie*);
@@ -40,6 +42,8 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
          << "2. Editare entitate/firma\n"
          << "3. Stergere entitate/firma\n"
          << "4. Afisare entitate/firma\n"
+         << "5. Salvare entitate/firma\n"
+         << "6. Importare entitate/firma\n"
          << "X. Meniul principal\n\n";
 
     cout << "Alegeti optiunea: ";
@@ -50,11 +54,17 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
       cout << Application->getHeader();
       cout << "1. Creare entitate/firma\n\n";
       Entity_create(Application, Pharmacy);
+      if (Application->getAutoValidare()) {
+        Pharmacy->autoValidate();
+      }
       getch();
       break;
     case '2':
       cout << Application->getHeader();
       cout << "2. Editare entitate/firma\n\n";
+      if (Application->getAutoValidare()) {
+        Pharmacy->autoValidate();
+      }
       Entity_edit(Application, Pharmacy);
       getch();
       break;
@@ -66,6 +76,18 @@ void EntityManagement(App* Application, Farmacie* Pharmacy)
       break;
     case '4':
       Entity_print(Application, Pharmacy);
+      getch();
+      break;
+    case '5':
+      cout << Application->getHeader()
+           << "5. Salvare entitate/firma\n\n";
+      Entity_save(Application, Pharmacy);
+      getch();
+      break;
+    case '6':
+      cout << Application->getHeader()
+           << "6. Importare entitate/firma\n\n";
+      Entity_import(Application, Pharmacy);
       getch();
       break;
     case 'X':
@@ -101,10 +123,15 @@ void Entity_create(App* Application, Farmacie* Pharmacy)
   } else {
     cout << "Entitatea creata nu este valida.";
   }
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
 }
 void Entity_edit(App* Application, Farmacie* Pharmacy) {
   if (!Pharmacy->isValidFarmacie()) {
-    cout << "Creati o entitate inainte de a o edita";
+    cout << "\n\nCreati o entitate inainte de a o edita";
     return;
   }
 
@@ -112,7 +139,6 @@ void Entity_edit(App* Application, Farmacie* Pharmacy) {
   char opt;
 
   do {
-    system("cls");
     cout << Application->getHeader();
     cout << "Editati entitatea curenta [" << Pharmacy->getId() << "] " << Pharmacy->getNume() << "\n\n";
     cout << "1. Editeaza numele entitatii\n"
@@ -123,6 +149,7 @@ void Entity_edit(App* Application, Farmacie* Pharmacy) {
 
     cout << "Alegeti optiunea:";
     cin >> opt;
+    cout << "\n\n";
 
     switch(opt) {
       case '1':
@@ -160,6 +187,11 @@ void Entity_edit(App* Application, Farmacie* Pharmacy) {
       break;
     }
   } while(1);
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
 }
 void Entity_delete(App* Application, Farmacie* Pharmacy) {
   std::string remove;
@@ -185,14 +217,34 @@ void Entity_delete(App* Application, Farmacie* Pharmacy) {
   cin.ignore();
   getline(cin, remove, '\n');
 
-  if (Pharmacy->customCap(remove) == Pharmacy->customCap(Pharmacy->getNume())) {
-    Pharmacy->setRemove(true);
-
-    cout << "\nEntitatea a fost stearsa cu succes.\n\n";
+  if (Pharmacy->customCap(remove) != Pharmacy->customCap(Pharmacy->getNume())) {
+    cout << "Numele introdus nu corespunde.";
     return;
   }
 
-  cout << "Numele introdus nu corespunde.";
+  Pharmacy->setRemove(true);
+  cout << "\nEntitatea a fost stearsa cu succes.\n\n";
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
+}
+void Entity_save(App* Application, Farmacie* Pharmacy) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Entitatea curenta este invalida sau nu exista.";
+    return;
+  }
+  
+  Pharmacy->saveEntity();
+}
+void Entity_import(App* Application, Farmacie* Pharmacy) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Entitatea curenta este invalida sau nu exista.";
+    return;
+  }
+
+  Pharmacy->importEntity();
 }
 
 // Recover entity

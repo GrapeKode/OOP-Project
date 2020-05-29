@@ -28,9 +28,28 @@ unsigned long long int Persoana::getCNP() { return CNP; }
 string Persoana::getInitPersoana() { return "Nume:\t\t" + prenume + " " + nume + "\nCNP:\t\t" + to_string(CNP) + "\n"; }
 
 // Validations
-bool Persoana::isValidNume(string _nume) { return _nume.length() > 0; }
+bool Persoana::isValidNume(string _nume) { return _nume != "unknown" && _nume.length() > 0; }
 bool Persoana::isValidCNP(unsigned long long int _CNP) { return to_string(_CNP).length() == 13; }
 bool Persoana::isValidInitPersoana() { return isValidNume(nume) && isValidNume(prenume) && isValidCNP(CNP); }
+
+// Auto validate
+// template <typename T>
+// bool Persoana::autoInitValidate(T* Person) {
+//   if (!Person->isValidNume(Person->getNume())) {
+//     Person->setNume(getValidNume());
+//   }
+//   if (!Person->isValidNume(Person->getPrenume())) {
+//     Person->setPrenume(getValidPrenume());
+//   }
+//   if (!Person->isValidCNP(Person->getCNP())) {
+//     Person->setCNP(getValidCNP());
+//   }
+//   return true
+// }
+// Generic Data #PRIVATE
+string Persoana::getValidNume() { return "Generic"; }
+string Persoana::getValidPrenume() { return "Name"; }
+unsigned long long int Persoana::getValidCNP() { return 1234567890123; }
 
 // Destructor
 Persoana::~Persoana()

@@ -1,0 +1,7 @@
+Id:		9000
+Nume:		Generic nume
+Locatie:	Generic locatie
+Medicamente:	0 / 200
+Angajati:	0 / 20
+Cienti:		0
+

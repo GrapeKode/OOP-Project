@@ -31,10 +31,17 @@ public:
   bool isValidNume(string);
   bool isValidLocatie(string);
 
+  // Auto validate
+  void autoValidate() {}
+
   // Destructor
   virtual ~Entitate();
 
 protected:
+  // Generic Data
+  int getValidId();
+  string getValidNume();
+  string getValidLocatie();
 private:
   string locatie;
   string nume;

@@ -46,10 +46,21 @@ public:
   bool isValidInitMedicament();
   virtual bool isValidMedicament() {};
 
+  // Auto validate
+  void autoValidate() {};
+
   // Destructor
   virtual ~Medicament();
 
 protected:
+  // Generic Data
+  unsigned int getValidInterval();
+  unsigned int getValidGramaj();
+  double getValidPret();
+  string getValidNume();
+  string getValidValabilitate();
+  string getValidTinta();
+  string getValidScop();
 private:
   unsigned int interval; // Intervalul orar de administrare
   unsigned int gramaj;   // Gramaj medicament

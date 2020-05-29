@@ -7,14 +7,19 @@ using namespace std;
 
 // Main Functions
 void Medicine_create(Farmacie*, Pastile*, Sirop*);
-void Medicine_add(Farmacie*, Pastile*, Sirop*);
-void Medicine_edit(Farmacie*, Pastile*, Sirop*);
-void Medicine_editMedicament(Farmacie*, Pastile*, Sirop*, int);
+void Medicine_add(App*, Farmacie*, Pastile*, Sirop*);
+void Medicine_edit(App*, Farmacie*, Pastile*, Sirop*);
+void Medicine_editMedicament(App*, Farmacie*, Pastile*, Sirop*, int);
 void Medicine_delete(Farmacie*, Pastile*, Sirop*);
+// Farmacie
+void Medicine_findD(App*, Farmacie*, Pastile*, Sirop*);
+void Medicine_editD(App*, Farmacie*, Pastile*, Sirop*);
+void Medicine_deleteD(App*, Farmacie*, Pastile*, Sirop*);
 
 template <typename T>
 void Medicine_setDefault(T*);
 int Medicine_choose();
+string Medicine_getName();
 
 // Setters
 template <typename T>
@@ -50,7 +55,7 @@ void MedicineManagement(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sir
 {
   // Initiate component
   Application->setCurrentComponent("Medicine");
-  
+
   bool exit = false;
   char opt;
   do
@@ -62,7 +67,10 @@ void MedicineManagement(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sir
          << "2. Editare medicament\n"
          << "3. Stergere medicament\n"
          << "4. Afisare medicament\n"
-         << "5. Adaugare medicament in depozit\n"
+         << "5. Adaugare in depozit\n"
+         << "6. Cautare in depozit\n"
+         << "7. Editare din depozit\n"
+         << "8. Stergere din depozit\n"
          << "X. Meniul principal\n\n";
 
     cout << "Alegeti optiunea: ";
@@ -73,10 +81,18 @@ void MedicineManagement(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sir
       cout << Application->getHeader();
       cout << "1. Creare medicament\n\n";
       Medicine_create(Pharmacy, Pill, Syrup);
+      if (Application->getAutoValidare()) {
+        Pill->autoValidate();
+        Syrup->autoValidate();
+      }
       getch();
       break;
     case '2':
-      Medicine_edit(Pharmacy, Pill, Syrup);
+      if (Application->getAutoValidare()) {
+        Pill->autoValidate();
+        Syrup->autoValidate();
+      }
+      Medicine_edit(Application, Pharmacy, Pill, Syrup);
       getch();
       break;
     case '3':
@@ -94,7 +110,29 @@ void MedicineManagement(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sir
     case '5':
       cout << Application->getHeader();
       cout << "5. Adaugare medicament in depozit\n\n";
-      Medicine_add(Pharmacy, Pill, Syrup);
+      Medicine_add(Application, Pharmacy, Pill, Syrup);
+      getch();
+      break;
+    case '6':
+      cout << Application->getHeader();
+      cout << "6. Cautare medicament in depozit\n\n";
+      Medicine_findD(Application, Pharmacy, Pill, Syrup);
+      getch();
+      break;
+    case '7':
+      cout << Application->getHeader();
+      cout << "7. Editare medicament din depozit\n\n";
+      Medicine_editD(Application, Pharmacy, Pill, Syrup);
+      if (Application->getAutoValidare()) {
+        Pill->autoValidate();
+        Syrup->autoValidate();
+      }
+      getch();
+      break;
+    case '8':
+      cout << Application->getHeader();
+      cout << "8. Stergere medicament din depozit\n\n";
+      Medicine_deleteD(Application, Pharmacy, Pill, Syrup);
       getch();
       break;
     case 'X':
@@ -141,7 +179,7 @@ void Medicine_create(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
   // Save the changes
   // Pharmacy->
 }
-void Medicine_add(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
+void Medicine_add(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
   int type = Medicine_choose();
 
   if ((type == 1 && !Pill->isValidMedicament()) || (type == 2 && !Syrup->isValidMedicament())) {
@@ -159,17 +197,21 @@ void Medicine_add(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
   } else {
     Pharmacy->setSirop(*Syrup);
   }
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
 }
-void Medicine_edit(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
+void Medicine_edit(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
   int type = Medicine_choose();
 
-  Medicine_editMedicament(Pharmacy, Pill, Syrup, type);
+  Medicine_editMedicament(Application, Pharmacy, Pill, Syrup, type);
 }
-void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, int type) {
+void Medicine_editMedicament(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, int type) {
   char opt;
 
-  system("cls");
-  cout << Pharmacy->getHeader();
+  cout << Application->getHeader();
   cout << "2. Editare medicament; tipul selectat: ";
   if (type == 1) {
     cout << "Pastile (" << Pill->getNume() << ")\n\n";
@@ -180,18 +222,18 @@ void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, in
   }
   cout << "1. Editeaza numele\n"
        << "2. Editeaza gramajul\n"
-       << "3. Editeaza intervalul orar\n"
-       << "4. Editeaza pretul\n"
-       << "5. Editeaza termenul de valabilitate\n"
-       << "6. Editeaza tinta (Copii | Adulti)\n"
-       << "7. Editeaza scopul\n"
-       << "8. Editeaza culoarea\n";
+       << "3. Editeaza tinta (Copii | Adulti)\n"
+       << "4. Editeaza scopul\n"
+       << "5. Editeaza pretul\n"
+       << "6. Editeaza intervalul orar\n"
+       << "7. Editeaza termenul de valabilitate\n";
   if (type == 1) {
-    cout << "9. Editeaza numarul de pastile\n";
+    cout << "8. Editeaza numarul de pastile\n";
   } else {
-    cout << "9. Editeaza cantitatea\n";
+    cout << "8. Editeaza cantitatea\n";
   }
-  cout << "0. Editeaza tipul ambalajului\n"
+  cout << "9. Editeaza tipul ambalajului\n"
+       << "0. Editeaza culoarea\n"
        << "X. Iesire din modul editare\n\n";
 
   cout << "Alegeti optiunea: ";
@@ -215,16 +257,16 @@ void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, in
     break;
   case '3':
     if (type == 1) {
-      Medicine_setInterval(Pill);
+      Medicine_setTinta(Pill);
     } else {
-      Medicine_setInterval(Syrup);
+      Medicine_setTinta(Syrup);
     }
     break;
   case '4':
     if (type == 1) {
-      Medicine_setPret(Pill);
+      Medicine_setScop(Pill);
     } else {
-      Medicine_setPret(Syrup);
+      Medicine_setScop(Syrup);
     }
     break;
   case '5':
@@ -236,37 +278,37 @@ void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, in
     break;
   case '6':
     if (type == 1) {
-      Medicine_setTinta(Pill);
+      Medicine_setInterval(Pill);
     } else {
-      Medicine_setTinta(Syrup);
+      Medicine_setInterval(Syrup);
     }
     break;
   case '7':
     if (type == 1) {
-      Medicine_setScop(Pill);
+      Medicine_setPret(Pill);
     } else {
-      Medicine_setScop(Syrup);
+      Medicine_setPret(Syrup);
     }
     break;
   case '8':
-    if (type == 1) {
-      Medicine_setCuloare(Pill);
-    } else {
-      Medicine_setCuloare(Syrup);
-    }
-    break;
-  case '9':
     if (type == 1) {
       Pills_setNr(Pill);
     } else {
       Syrups_setCantitate(Syrup);
     }
     break;
-  case '0':
+  case '9':
     if (type == 1) {
       Pills_setTip(Pill);
     } else {
       Syrups_setTip(Syrup);
+    }
+    break;
+  case '0':
+    if (type == 1) {
+      Medicine_setCuloare(Pill);
+    } else {
+      Medicine_setCuloare(Syrup);
     }
     break;
   case 'x':
@@ -278,7 +320,7 @@ void Medicine_editMedicament(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup, in
     break;
   }
 
-  return Medicine_editMedicament(Pharmacy, Pill, Syrup, type);
+  return Medicine_editMedicament(Application, Pharmacy, Pill, Syrup, type);
 }
 void Medicine_delete(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
   std::string remove;
@@ -310,6 +352,155 @@ void Medicine_delete(Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
 
   cout << "Numele introdus nu corespunde.";
 }
+// Farmacie
+void Medicine_findD(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
+  char allow;
+
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "Farmacia este invalida sau nu exista.";
+    return;
+  }
+  cout << "WARNING: Aceasta actiune va sterge medicamentul curent! Continuati? (y/N): ";
+  cin >> allow;
+  if (toupper(allow) == 'N') {
+    return;
+  }
+
+  Pastile SecondPill;
+  Sirop SecondSyrup;
+  int type = Medicine_choose();
+  int index;
+
+  if (type == 1) {
+    // Pills
+    index = Pharmacy->findIndexPastile(Medicine_getName());
+    SecondPill = Pharmacy->findPastile(index);
+
+    if (!SecondPill.isValidMedicament()) {
+      cout << "Medicamentul nu a fost gasit.";
+      return;
+    }
+
+    cout << "\nMedicamentul gasit:\n\n" << SecondPill.getMedicament() << "\n\n";
+    *Pill = SecondPill;
+  } else {
+    // Syropus
+    index = Pharmacy->findIndexSirop(Medicine_getName());
+    SecondSyrup = Pharmacy->findSirop(index);
+
+    if (!SecondSyrup.isValidMedicament()) {
+      cout << "Medicamentul nu a fost gasit.";
+      return;
+    }
+
+    cout << "\nMedicamentul gasit:\n\n" << SecondSyrup.getMedicament() << "\n\n";
+    *Syrup = SecondSyrup;
+  }
+}
+void Medicine_editD(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "Farmacia este invalida sau nu exista.";
+    return;
+  }
+
+  Pastile SecondPill;
+  Sirop SecondSyrup;
+  int type = Medicine_choose();
+  int index;
+
+  if (type == 1) {
+    // Pills
+    index = Pharmacy->findIndexPastile(Medicine_getName());
+    SecondPill = Pharmacy->findPastile(index);
+
+    if (!SecondPill.isValidMedicament()) {
+      cout << "Medicamentul nu a fost gasit.";
+      return;
+    }
+
+    Medicine_editMedicament(Application, Pharmacy, &SecondPill, &SecondSyrup, type);
+    Pharmacy->setPastile(SecondPill, index);
+  } else {
+    // Syropus
+    index = Pharmacy->findIndexSirop(Medicine_getName());
+    SecondSyrup = Pharmacy->findSirop(index);
+
+    if (!SecondSyrup.isValidMedicament()) {
+      cout << "Medicamentul nu a fost gasit.";
+      return;
+    }
+
+    Medicine_editMedicament(Application, Pharmacy, &SecondPill, &SecondSyrup, type);
+    Pharmacy->setSirop(SecondSyrup, index);
+  }
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
+}
+void Medicine_deleteD(App* Application, Farmacie* Pharmacy, Pastile* Pill, Sirop* Syrup) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "Farmacia este invalida sau nu exista.";
+    return;
+  }
+
+  Pastile SecondPill;
+  Sirop SecondSyrup;
+  int type = Medicine_choose();
+  int removeIndex;
+  char remove;
+
+  if (type == 1) {
+    // Pills
+    removeIndex = Pharmacy->findIndexPastile(Medicine_getName());
+    SecondPill = Pharmacy->findPastile(removeIndex);
+
+    if (!SecondPill.isValidMedicament()) {
+      cout << "Medicamentul nu a fost gasit.";
+      return;
+    }
+
+    cout << "\nMedicamentul gasit:\n"
+         << SecondPill.getMedicament() << "\n"
+         << "Doriti sa-l stergeti? (y/N): ";
+    cin >> remove;
+
+    if (toupper(remove) == 'N') {
+      return;
+    }
+
+    // Remove the item from deposit
+    Pharmacy->removePastile(removeIndex);
+  } else {
+    // Syropus
+    removeIndex = Pharmacy->findIndexPastile(Medicine_getName());
+    SecondSyrup = Pharmacy->findSirop(removeIndex);
+
+    if (!SecondSyrup.isValidMedicament()) {
+      cout << "Medicamentul nu a fost gasit.";
+      return;
+    }
+
+    cout << "\nMedicamentul gasit:\n"
+         << SecondSyrup.getMedicament() << "\n"
+         << "Doriti sa-l stergeti? (y/N): ";
+    cin >> remove;
+
+    if (toupper(remove) == 'N') {
+      return;
+    }
+
+    // Remove the item from deposit
+    Pharmacy->removeSirop(removeIndex);
+  }
+  cout << "Medicamentul a fost sters cu succes.";
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
+}
 
 template <typename T>
 void Medicine_setDefault(T* M) {
@@ -340,6 +531,16 @@ int Medicine_choose() {
   }
   cout << endl;
   return type;
+}
+string Medicine_getName() {
+  string name;
+
+  cout << "Introduceti numele medicamentului: ";
+  cin.clear();
+  cin.ignore();
+  getline(cin, name, '\n');
+
+  return name;
 }
 
 // Setters
@@ -438,7 +639,7 @@ void Medicine_setCuloare(T* M) {
 
   cout << "Introduceti culoarea: ";
   cin.clear();
-  cin.ignore();
+  // cin.ignore();
   getline(cin, culoare, '\n');
 
   M->setCuloare(culoare);

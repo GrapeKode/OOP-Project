@@ -8,6 +8,10 @@ void Client_create(App*, Farmacie*, Client*);
 void Client_add(App*, Farmacie*, Client*);
 void Client_edit(App*, Farmacie*, Client*);
 void Client_delete(App*, Farmacie*, Client*);
+// Farmacie
+void Client_findP(App*, Farmacie*, Client*);
+void Client_editP(App*, Farmacie*, Client*);
+void Client_deleteP(App*, Farmacie*, Client*);
 
 // Setters
 void Client_setName(Client*);
@@ -18,6 +22,9 @@ void Client_setClientFidel(Client*);
 
 // Getters
 string Client_print(App*, Farmacie*, Client*);
+
+// Utils
+unsigned long long int Client_getCNP(Client*);
 
 /**
  * Client Management
@@ -39,7 +46,10 @@ void ClientManagement(App* Application, Farmacie* Pharmacy, Client* Consumer)
          << "2. Editare client\n"
          << "3. Stergere client\n"
          << "4. Afisare client\n"
-         << "5. Adaugare client\n"
+         << "5. Adaugare in baza de date\n"
+         << "6. Cautare in baza de date\n"
+         << "7. Editare din baza de date\n"
+         << "8. Stergere din baza de date\n"
          << "X. Meniul principal\n\n";
 
     cout << "Alegeti optiunea: ";
@@ -50,12 +60,18 @@ void ClientManagement(App* Application, Farmacie* Pharmacy, Client* Consumer)
       cout << Application->getHeader();
       cout << "1. Creare client\n\n";
       Client_create(Application, Pharmacy, Consumer);
+      if (Application->getAutoValidare()) {
+        Consumer->autoValidate();
+      }
       getch();
       break;
     case '2':
       cout << Application->getHeader();
       cout << "2. Editare client\n\n";
       Client_edit(Application, Pharmacy, Consumer);
+      if (Application->getAutoValidare()) {
+        Consumer->autoValidate();
+      }
       getch();
       break;
     case '3':
@@ -72,8 +88,26 @@ void ClientManagement(App* Application, Farmacie* Pharmacy, Client* Consumer)
       break;
     case '5':
       cout << Application->getHeader();
-      cout << "5. Adaugare client\n\n";
+      cout << "5. Adaugare client in baza de date\n\n";
       Client_add(Application, Pharmacy, Consumer);
+      getch();
+      break;
+    case '6':
+      cout << Application->getHeader();
+      cout << "6. Cautare client in baza de date\n\n";
+      Client_findP(Application, Pharmacy, Consumer);
+      getch();
+      break;
+    case '7':
+      cout << Application->getHeader();
+      cout << "7. Editare client din baza de date\n\n";
+      Client_editP(Application, Pharmacy, Consumer);
+      getch();
+      break;
+    case '8':
+      cout << Application->getHeader();
+      cout << "8. Stergere client din baza de date\n\n";
+      Client_deleteP(Application, Pharmacy, Consumer);
       getch();
       break;
     case 'X':
@@ -117,6 +151,11 @@ void Client_add(App* Application, Farmacie* Pharmacy, Client* Consumer) {
   }
 
   Pharmacy->setClient(*Consumer);
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
 }
 void Client_edit(App* Application, Farmacie* Pharmacy, Client* Consumer) {
   char opt;
@@ -178,6 +217,97 @@ void Client_delete(App* Application, Farmacie* Pharmacy, Client* Consumer) {
 
   cout << "Numele introdus nu corespunde.";
 }
+// Farmacie
+void Client_findP(App* Application, Farmacie* Pharmacy, Client* Consumer) {
+  char allow;
+
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Farmacia nu exista sau este invalida.";
+    return;
+  }
+  cout << "WARNING: Aceasta actiune va sterge clientul curent! Continuati? (y/N): ";
+  cin >> allow;
+  if (toupper(allow) == 'N') {
+    return;
+  }
+
+  unsigned long long int CNP = Client_getCNP(Consumer);
+  int findIndex;
+  Client C;
+
+  findIndex = Pharmacy->findIndexClient(CNP);
+  if (findIndex == -1) {
+    cout << "INFO: Clientul nu a fost gasit.";
+    return;
+  }
+  C = Pharmacy->findClient(findIndex);
+  if (!C.isValidPersoana()) {
+    cout << "INFO: Clientul nu exista in baza de date sau este invalid.";
+    return;
+  }
+
+  *Consumer = C;
+  cout << "INFO: Clientul a fost gasit.\n\n"
+       << C.getPersoana();
+}
+void Client_editP(App* Application, Farmacie* Pharmacy, Client* Consumer) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Farmacia nu exista sau este invalida.";
+    return;
+  }
+
+  unsigned long long int CNP = Client_getCNP(Consumer);
+  int findIndex;
+  Client C;
+
+  findIndex = Pharmacy->findIndexClient(CNP);
+  if (findIndex == -1) {
+    cout << "INFO: Clientul nu a fost gasit.";
+    return;
+  }
+  C = Pharmacy->findClient(findIndex);
+  if (!C.isValidPersoana()) {
+    cout << "INFO: Clientul nu exista in baza de date sau este invalid.";
+    return;
+  }
+
+  Client_edit(Application, Pharmacy, &C);
+  Pharmacy->setClient(C, findIndex);
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
+}
+void Client_deleteP(App* Application, Farmacie* Pharmacy, Client* Consumer) {
+  if (!Pharmacy->isValidFarmacie()) {
+    cout << "INFO: Farmacia nu exista sau este invalida.";
+    return;
+  }
+
+  unsigned long long int CNP = Client_getCNP(Consumer);
+  int findIndex;
+  Client C;
+
+  findIndex = Pharmacy->findIndexClient(CNP);
+  if (findIndex == -1) {
+    cout << "INFO: Clientul nu a fost gasit.";
+    return;
+  }
+  C = Pharmacy->findClient(findIndex);
+  if (!C.isValidPersoana()) {
+    cout << "INFO: Clientul nu exista in baza de date sau este invalid.";
+    return;
+  }
+
+  Pharmacy->removeClient(findIndex);
+  cout << "INFO: Clientul a fost sters cu succes.";
+
+  // Auto-save
+  if (Application->getAutoSave()) {
+    Pharmacy->saveEntity();
+  }
+}
 
 // Setters
 void Client_setName(Client* Consumer) {
@@ -190,23 +320,14 @@ void Client_setName(Client* Consumer) {
 
   cout << "Introduceti numele de familie: ";
   cin.clear();
-  cin.ignore();
+  // cin.ignore();
   getline(cin, lastName, '\n');
 
   Consumer->setPrenume(firstName);
   Consumer->setNume(lastName);
 }
 void Client_setCNP(Client* Consumer) {
-  unsigned long long int CNP;
-
-  cout << "Introduceti CNP-ul (13 cifre): ";
-  cin >> CNP;
-
-  if (std::cin.fail() || !Consumer->isValidCNP(CNP)) {
-    std::cin.clear();
-    std::cin.ignore(256, '\n');
-    return Client_setCNP(Consumer);
-  }
+  unsigned long long int CNP = Client_getCNP(Consumer);
 
   Consumer->setCNP(CNP);
 }
@@ -215,7 +336,7 @@ void Client_setRecomandare(Client* Consumer) {
 
   cout << "Introduceti recomandarea (medicamente): ";
   cin.clear();
-  cin.ignore();
+  // cin.ignore();
   getline(cin, recomandare, '\n');
 
   Consumer->setRecomandare(recomandare);
@@ -246,4 +367,20 @@ void Client_setClientFidel(Client* Consumer) {
 // Getters
 string Client_print(App* Application, Farmacie* Pharmacy, Client* Consumer) {
   return Consumer->getPersoana();
+}
+
+// Utils
+unsigned long long int Client_getCNP(Client* Consumer) {
+  unsigned long long int CNP;
+
+  cout << "Introduceti CNP-ul (13 cifre): ";
+  cin >> CNP;
+
+  if (std::cin.fail() || !Consumer->isValidCNP(CNP)) {
+    std::cin.clear();
+    std::cin.ignore(256, '\n');
+    return Client_getCNP(Consumer);
+  }
+
+  return CNP;
 }
